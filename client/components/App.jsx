@@ -8,13 +8,10 @@ export default class App extends Component {
     this.state = {
       showNew: false,
       showStatus: false,
-      coordinates: {}
     }
     this.handleClick = this.handleClick.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
-    this.onDragStart = this.onDragStart.bind(this);
     this.onDrop = this.onDrop.bind(this);
-    this.testClick = this.testClick.bind(this);
   }
 
   handleClick() {
@@ -22,29 +19,18 @@ export default class App extends Component {
   }
 
   onDragOver(e) {
-    console.log('dragover')
     e.preventDefault();
   }
 
-  onDragStart(e, i) {
-    console.log('dragging')
-    ev.dataTransfer.setData('i', i);
-  }
-
   onDrop(e) {
-    let i = e.dataTransfer.getData('i');
-  }
-
-  testClick(e) {
-    console.log('clicked');
+    e.preventDefault();
     this.setState({ coordinates: 
       {
         position: 'absolute',
-        top: 100 + 'px',
-        left: 100 + 'px'
+        top: e.pageY - 12 + 'px',
+        left: e.pageX - 165 + 'px'
       }
     })
-    console.log(this.state.coordinates)
   }
 
   render() {
@@ -52,11 +38,9 @@ export default class App extends Component {
     const components = [StatusPoints];
     components.forEach((C, i) => {
       sims.push(
-        <div className={this.state.showStatus ? `visible` : `invisible`} onClick={(e)=>this.testClick()}  style={this.state.coordinates}>
+        <div className={this.state.showStatus ? `visible` : `invisible`} style={this.state.coordinates}>
           <C
             key={i}
-            draggable
-            onDragStart={(e)=>this.onDragStart(e, i)}
           />
         </div>
       );
@@ -74,8 +58,8 @@ export default class App extends Component {
             <div className={styles.header}>
               <button onClick={e=>this.handleClick()} type="button" className={`btn`}>Status</button>
             </div>
-
-            <div className={styles.sim} onDragOver={(e)=>this.onDragOver(e)}>
+            
+            <div className={styles.sim} onDragOver={(e)=>this.onDragOver(e)} onDrop={(e)=>this.onDrop(e)}>
               {sims.map(s => (
                 s
               ))}
