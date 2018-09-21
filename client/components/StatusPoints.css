@@ -1,17 +1,53 @@
-
-
 :local(.status) {
   border-radius: 5px;
+  background-color: #fff;
   box-shadow: 1px 2px 10px 0 rgba(0,0,0,0.5);
   line-height: 1;
   border-collapse: separate;
   border-spacing: 0;
+  padding-bottom: 2px;
 }
+
+:local(.darken) {
+  filter: brightness(50%);
+}
+
+:local(.dotmove) {
+  cursor: grab;
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+  background: linear-gradient(45deg,#89d4eb, #64caf5, #89d4eb, #64caf5, #89d4eb);
+  margin: 3px 2px;
+}
+
+:local(.dot) {
+  cursor: pointer;
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+  background: linear-gradient(45deg,#89d4eb, #64caf5, #89d4eb, #64caf5, #89d4eb);
+  margin: 3px 2px;
+}
+
+:local(.floatr) {
+  float: right;
+}
+
+:local(.dotletter) {
+  position: absolute;
+  font-size: 70%;
+  font-weight: 600;
+  margin: -2px 1px;
+}
+
 
 :local(.header) {
   background: linear-gradient(135deg,#c1e4fc, #89d4eb, #c1e4fc, #89d4eb, #c1e4fc);
-  cursor: grab;
   border-spacing: 0;
+  border-radius: 5px 5px 0 0;
 }
 
 :local(.dragging) {
@@ -56,4 +92,54 @@
 
 :local(.padr) {
   padding-right: 5px;
+}
+
+:local(.triangler:before) {
+  content: '';
+  top: 1px;
+  left: 1px;
+  position: absolute;
+  z-index: 2;
+  min-width: 9px;
+  min-height: 9px;
+  background: #c1e4fc;
+  -webkit-clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+  clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+}
+
+:local(.triangler) {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  min-width: 11px;
+  min-height: 11px;
+  background: #82a3b4;
+  -webkit-clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+  clip-path: polygon(10% 0, 100% 50%, 10% 100%);  
+}
+
+:local(.trianglerpress) {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  min-width: 11px;
+  min-height: 11px;
+  background: #82a3b4;
+  -webkit-clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+  clip-path: polygon(10% 0, 100% 50%, 10% 100%);  
+}
+
+:local(.trianglerhide) {
+  position: relative;
+  display: block;
+  min-width: 11px;
+  min-height: 11px;
+}
+
+:local(.hide) {
+  display: none;
+}
+
+:local(.unhide) {
+  display: table-row;
 }
