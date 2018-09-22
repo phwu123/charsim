@@ -86,7 +86,9 @@ export default class App extends Component {
         <div className={`row`}>
           <div className={`col-sm-2`}>
             <div className={styles.menu}>
-              Menu
+              <span className={[`btn`, styles.statusb].join(' ')}>
+                Menu
+              </span>
             </div>
           </div>
           <div className={`col-sm-10`}>

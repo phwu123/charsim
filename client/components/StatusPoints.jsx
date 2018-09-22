@@ -5,7 +5,7 @@ export default class StatusPoints extends Component {
   constructor() {
     super()
     this.state = {
-      guild: 'Shhh',
+      guild: 'None',
       points: 1325,
       baseStats: {
         str: 1,
@@ -151,7 +151,13 @@ export default class StatusPoints extends Component {
     this.setState({ tooltip: false });
   }
 
+  nameInput(e) {
+    this.setState({ guild: e.target.value });
+  }
+
   render() {
+    const guild = this.state.guild;
+
     const str = this.state.baseStats.str;
     const strBonus = this.state.addStats.str;
     const agi = this.state.baseStats.agi;
@@ -226,11 +232,11 @@ export default class StatusPoints extends Component {
               </span>
           </th>
           <tr className={this.state.showStats ? styles.unhide : styles.hide}>
-            <td>&nbsp;Str&nbsp;</td>
+            <td className={styles.borderu}>&nbsp;Str&nbsp;</td>
             <td className={[styles.background, styles.borderudl].join(' ')}>
               <form onSubmit={e=>this.preventDefault(e)}>
                 <input
-                  className={styles.formlen}
+                  className={styles.formlenstats}
                   data-stat="str"
                   placeholder={str}
                   maxlength="2"
@@ -257,18 +263,18 @@ export default class StatusPoints extends Component {
               }
             </td>
             <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{strIncrement}</td>
-            <td>
+            <td className={styles.borderu}>
               &nbsp;
               <span class={styles.underline}>Atk</span>
             </td>
-            <td>
+            <td className={styles.borderu}>
               <span class={styles.underline}>{atk} + {atkAdd}</span>
             </td>
-            <td>
+            <td className={styles.borderu}>
               &nbsp;
               <span class={styles.underline}>Def</span>
             </td>
-            <td className={styles.textRight}>
+            <td className={[styles.textRight, styles.borderu].join(' ')}>
               <span class={styles.underline}>{def} + {defAdd}</span>
               &nbsp;
             </td>
@@ -278,7 +284,7 @@ export default class StatusPoints extends Component {
             <td className={[styles.background, styles.borderudl].join(' ')}>
               <form onSubmit={e=>this.preventDefault(e)}>
                 <input
-                  className={styles.formlen}
+                  className={styles.formlenstats}
                   data-stat="agi"
                   placeholder={agi}
                   maxlength="2"
@@ -326,7 +332,7 @@ export default class StatusPoints extends Component {
             <td className={[styles.background, styles.borderudl].join(' ')}>
               <form onSubmit={e=>this.preventDefault(e)}>
                 <input
-                  className={styles.formlen}
+                  className={styles.formlenstats}
                   data-stat="vit"
                   placeholder={vit}
                   maxlength="2"
@@ -374,7 +380,7 @@ export default class StatusPoints extends Component {
             <td className={[styles.background, styles.borderudl].join(' ')}>
               <form onSubmit={e=>this.preventDefault(e)}>
                 <input
-                  className={styles.formlen}
+                  className={styles.formlenstats}
                   data-stat="int"
                   placeholder={int}
                   maxlength="2"
@@ -422,7 +428,7 @@ export default class StatusPoints extends Component {
             <td className={[styles.background, styles.borderudl].join(' ')}>
               <form onSubmit={e=>this.preventDefault(e)}>
                 <input
-                  className={styles.formlen}
+                  className={styles.formlenstats}
                   data-stat="dex"
                   placeholder={dex}
                   maxlength="2"
@@ -463,7 +469,7 @@ export default class StatusPoints extends Component {
             <td className={[styles.background, styles.borderudl, styles.borderlast].join(' ')}>
               <form onSubmit={e=>this.preventDefault(e)}>
                 <input
-                  className={styles.formlen}
+                  className={styles.formlenstats}
                   data-stat="luk"
                   placeholder={luk}
                   maxlength="2"
@@ -495,7 +501,19 @@ export default class StatusPoints extends Component {
               <span class={styles.underline}>Guild</span>
             </td>
             <td colspan="3" className={styles.textRight}>
-              <span class={styles.underline}>{this.state.guild}</span>
+              <span class={styles.underline}>
+              <form onSubmit={e=>this.preventDefault(e)} className={styles.guildform}>
+                <input
+                  className={styles.formlenguild}
+                  data-name="guild"
+                  placeholder={guild}
+                  maxlength="15"
+                  type="text"
+                  onKeyUp={e=>this.nameInput(e)}
+                  onBlur={e=>this.clearInput(e)}
+                />
+              </form>
+              </span>
               &nbsp;
             </td>
           </tr>

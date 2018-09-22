@@ -8,12 +8,22 @@
   padding-bottom: 2px;
 }
 
-:local(.formlen) {
+:local(.formlenstats) {
   max-width: 20px;
   border: 0;
   padding: 0;
   text-align: right;
-  z-index: -1;
+}
+
+:local(.formlenguild) {
+  max-width: 130px;
+  border: 0;
+  padding: 0 2px 0 0;
+  text-align: right;
+}
+
+:local(.guildform) {
+  display: inline;
 }
 
 :local(.formlen:hover) {
@@ -85,6 +95,10 @@
   border: 2px solid #c0e8f7;
   border-bottom: none;
   background-color: #f4f4f4;
+}
+
+:local(.borderu) {
+  border-top:  2px solid #c0e8f7;
 }
 
 :local(.borderudl) {
@@ -166,3 +180,4 @@
 :local(.unhide) {
   display: table-row;
 }
+
