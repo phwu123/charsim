@@ -8,8 +8,16 @@
   padding-bottom: 2px;
 }
 
-:local(.darken) {
-  filter: brightness(50%);
+:local(.formlen) {
+  max-width: 20px;
+  border: 0;
+  padding: 0;
+  text-align: right;
+  z-index: -1;
+}
+
+:local(.formlen:hover) {
+  box-shadow:0 0 10px #9ecaed;
 }
 
 :local(.dotmove) {
@@ -30,6 +38,21 @@
   border-radius: 50%;
   background: linear-gradient(45deg,#89d4eb, #64caf5, #89d4eb, #64caf5, #89d4eb);
   margin: 3px 2px;
+}
+
+:local(.dot:hover) {
+  filter: brightness(50%);
+}
+
+:local(.tooltip) {
+  display: block;
+  position: absolute;
+  width: 100px;
+  font-size: x-small;
+  padding-left: 2px;
+  border-radius: 5px;
+  background: linear-gradient(135deg,#c1e4fc, #89d4eb, #c1e4fc, #89d4eb, #c1e4fc);
+  transform: translateY(-25px);
 }
 
 :local(.floatr) {
