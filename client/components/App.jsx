@@ -73,10 +73,10 @@ export default class App extends Component {
         <div 
           className={this.state.showStatus ?
             `visible` : `invisible`} 
-          style={this.state.coordinates}>
-          <C
-            key={i}
-          />
+          style={this.state.coordinates}
+          key={i}
+        >
+          <C/>
         </div>
       );
     })

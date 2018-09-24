@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
 import styles from './StatusPoints.css';
+import { connect } from 'react-redux';
+import * as incStats from './actions';
+import store from './store';
 
-export default class StatusPoints extends Component {
+const mapStateToProps = (state) => {
+  return { all: state }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    incStr: (stat) => dispatch(incStats.incStr(stat)),
+  };
+}
+
+class ConnectedStatusPoints extends Component {
   constructor() {
     super()
     this.state = {
@@ -29,6 +42,10 @@ export default class StatusPoints extends Component {
 
   componentDidMount() {
     this.validateStats();
+    const strBase = this.state.baseStats.str + 2;
+    this.props.incStr(strBase);
+    console.log(store.getState())
+    console.log(this.props.all);
   }
 
   clickCloseStats() {
@@ -37,7 +54,7 @@ export default class StatusPoints extends Component {
 
   validateStats() {
     let pointsLeft = 1325
-    const baseStats = {...this.state.baseStats}
+    const baseStats = { ...this.state.baseStats }
     for (let stats in baseStats) {
       const stat = baseStats[stats];
       let count = 1;
@@ -66,7 +83,7 @@ export default class StatusPoints extends Component {
 
   maxAllowed(stat) {
     let points = this.state.points;
-    const baseStats = {...this.state.baseStats};
+    const baseStats = { ...this.state.baseStats };
     stat = baseStats[stat];
     let increment = Math.floor((stat - 1) / 10) + 2;
     while (points >= increment && stat < 99) {
@@ -78,7 +95,7 @@ export default class StatusPoints extends Component {
   }
 
   statInput(e) {
-    const baseStats = {...this.state.baseStats};
+    const baseStats = { ...this.state.baseStats };
     const stat = e.target.dataset.stat;
     const statInput = stat + 'Input';
     const value = e.target.validity.valid && e.target.value > 0 ? e.target.value : 1;
@@ -95,7 +112,7 @@ export default class StatusPoints extends Component {
           baseStats[stat] = this.state[statInput];
           this.setState({ baseStats }, () => {
             this.validateStats();
-          }); 
+          });
         }
       );
     }
@@ -105,7 +122,7 @@ export default class StatusPoints extends Component {
     const statType = e.target.dataset.stat;
     const stat = this.state.baseStats[statType];
     const statIncrement = Math.floor((stat - 1) / 10) + 2;
-    const baseStats = {...this.state.baseStats};
+    const baseStats = { ...this.state.baseStats };
     baseStats[statType] += 1;
     this.setState({
       points: this.state.points - statIncrement,
@@ -136,7 +153,7 @@ export default class StatusPoints extends Component {
   }
 
   resetStats() {
-    const baseStats = {...this.state.baseStats};
+    const baseStats = { ...this.state.baseStats };
     for (let stat in baseStats) {
       baseStats[stat] = 1;
     }
@@ -173,13 +190,15 @@ export default class StatusPoints extends Component {
 
     const points = this.state.points;
 
+//formulas mostly based on https://irowiki.org/classic/Stats
+
     const baseLvl = 99;
-    const baseAtk = Math.floor((baseLvl / 4) + str + dex / 5 + luk / 3);
+    const baseAtk = Math.floor((baseLvl / 4) + str + dex / 5 + luk / 5) + Math.floor(str / 10) * 2 - 1;
     const baseDef = Math.floor(vit / 2 + Math.max(vit * 0.3, vit * vit / 150 - 1));
-    const baseMatk = Math.floor(Math.floor(baseLvl / 4) + int + Math.floor(int / 2) + Math.floor(dex / 5) + Math.floor(luk / 3));
+    const baseMatk = int + Math.floor(int / 7) * Math.floor(int / 7);
     const baseMdef = Math.floor(int + vit / 5 + dex / 5 + baseLvl / 4);
     const baseHit = 175 + baseLvl + dex + Math.floor(luk / 3);
-    const baseCrit = luk * 0.3;
+    const baseCrit = luk * 0.3 + 1;
     const baseFlee = 100 + baseLvl + agi + Math.floor(luk / 5);
     //aspd formula? => https://www.novaragnarok.com/wiki/Attack_Speed
     const baseAspd = 156;
@@ -190,8 +209,9 @@ export default class StatusPoints extends Component {
     const atkAdd = 0;
     const def = baseDef;
     const defAdd = 0;
-    const matk = baseMatk;
-    const matkAdd = baseMatk;
+    const matkMin = baseMatk;
+    const matkMax = int + Math.floor(int / 5) * Math.floor(int / 5);
+    const matkAdd = 0;
     const mdef = baseMdef;
     const mdefAdd = 0;
     const hit = baseHit;
@@ -212,313 +232,406 @@ export default class StatusPoints extends Component {
     return (
       <div>
         <table className={styles.status}>
-          <th colspan="10" className={styles.header}>
-            <span className={styles.dotmove} draggable onDragStart={e=>this.onDragStart(e)}></span>
-            Status
-            <span className={styles.floatr}>
-              <span className={styles.dot}>
-                <span className={styles.dotletter} onClick={e=>this.clickCloseStats()}>
-                  -
-                </span>
-              </span>
-                <span className={styles.dot}>
-                  <span className={styles.dotletter} onClick={e=>this.resetStats(e)} onMouseOver={e=>this.tooltipOn(e)} onMouseOut={e=>this.tooltipOff(e)}>
+          <thead className={styles.header}>
+            <tr>
+              <td colSpan="9">
+                <span className={styles.dotmove} draggable onDragStart={e => this.onDragStart(e)}></span>
+                <span>Status</span>
+              </td>
+              <td className={styles.floatr}>
+                <div className={styles.dot}>
+                  <div className={styles.dotletter} onClick={e => this.clickCloseStats()}>
+                    -
+                </div>
+                </div>
+                <div className={styles.dot}>
+                  <div className={styles.dotletter} onClick={e => this.resetStats(e)} onMouseOver={e => this.tooltipOn(e)} onMouseOut={e => this.tooltipOff(e)}>
                     x
-                  </span>
+                  </div>
+                </div>
+                <div className={this.state.tooltip ? styles.tooltip : styles.hide}>
+                  Reset Status Points
+                </div>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className={this.state.showStats ? styles.unhide : styles.hide}>
+              <td className={styles.borderu}>&nbsp;Str&nbsp;</td>
+              <td className={[styles.background, styles.borderudl].join(' ')}>
+                <form onSubmit={e => this.preventDefault(e)}>
+                  <input
+                    className={styles.formlenstats}
+                    data-stat="str"
+                    placeholder={str}
+                    maxLength="2"
+                    type="text"
+                    pattern="[0-9]*"
+                    onKeyUp={e => this.statInput(e)}
+                    onBlur={e => this.clearInput(e)}
+                  />
+                </form>
+              </td>
+              <td className={[styles.background, styles.borderud].join(' ')}>{strBonus !== 0 && '+'}</td>
+              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{strBonus !== 0 && `${strBonus}`}</td>
+              <td className={styles.background}>
+                {this.state.points >= strIncrement && str < 99 ?
+                  <span
+                    onClick={e => this.incStat(e)}
+                    data-stat="str"
+                    onMouseDown={e => this.incStatPush(e)}
+                    onMouseUp={e => this.incStatRelease(e)}
+                    className={this.state.strPress ? styles.trianglerpress : styles.triangler}
+                  >
+                  </span> :
+                  <span className={styles.trianglerhide}></span>
+                }
+              </td>
+              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{strIncrement}</td>
+              <td className={styles.borderu}>
+                &nbsp;
+              <span className={styles.underline}>Atk</span>
+              </td>
+              <td className={styles.borderu}>
+                <span className={styles.underline}>{atk} + {atkAdd}</span>
+              </td>
+              <td className={styles.borderu}>
+                &nbsp;
+              <span className={styles.underline}>Def</span>
+              </td>
+              <td className={[styles.textRight, styles.borderu].join(' ')}>
+                <span className={styles.underline}>{def} + {defAdd}</span>
+                &nbsp;
+            </td>
+            </tr>
+            <tr className={this.state.showStats ? styles.unhide : styles.hide}>
+              <td>&nbsp;Agi&nbsp;</td>
+              <td className={[styles.background, styles.borderudl].join(' ')}>
+                <form onSubmit={e => this.preventDefault(e)}>
+                  <input
+                    className={styles.formlenstats}
+                    data-stat="agi"
+                    placeholder={agi}
+                    maxLength="2"
+                    type="text"
+                    pattern="[0-9]*"
+                    onKeyUp={e => this.statInput(e)}
+                    onBlur={e => this.clearInput(e)}
+                  />
+                </form>
+              </td>
+              <td className={[styles.background, styles.borderud].join(' ')}>{agiBonus !== 0 && '+'}</td>
+              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{agiBonus !== 0 && `${agiBonus}`}</td>
+              <td className={styles.background}>
+                {this.state.points >= agiIncrement && agi < 99 ?
+                  <span
+                    onClick={e => this.incStat(e)}
+                    data-stat="agi"
+                    onMouseDown={e => this.incStatPush(e)}
+                    onMouseUp={e => this.incStatRelease(e)}
+                    className={this.state.agiPress ? styles.trianglerpress : styles.triangler}
+                  >
+                  </span> :
+                  <span className={styles.trianglerhide}></span>
+                }
+              </td>
+              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{agiIncrement}</td>
+              <td>
+                &nbsp;
+              <span className={styles.underline}>Matk</span>
+              </td>
+              <td>
+                <span className={styles.underline}>{matkMin} ~ {matkMax}</span>
+              </td>
+              <td>
+                &nbsp;
+              <span className={styles.underline}>Mdef</span>
+              </td>
+              <td className={styles.textRight}>
+                <span className={styles.underline}>{mdef} + {mdefAdd}</span>
+                &nbsp;
+            </td>
+            </tr>
+            <tr className={this.state.showStats ? styles.unhide : styles.hide}>
+              <td>&nbsp;Vit&nbsp;</td>
+              <td className={[styles.background, styles.borderudl].join(' ')}>
+                <form onSubmit={e => this.preventDefault(e)}>
+                  <input
+                    className={styles.formlenstats}
+                    data-stat="vit"
+                    placeholder={vit}
+                    maxLength="2"
+                    type="text"
+                    pattern="[0-9]*"
+                    onKeyUp={e => this.statInput(e)}
+                    onBlur={e => this.clearInput(e)}
+                  />
+                </form>
+              </td>
+              <td className={[styles.background, styles.borderud].join(' ')}>{vitBonus !== 0 && '+'}</td>
+              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{vitBonus !== 0 && `${vitBonus}`}</td>
+              <td className={styles.background}>
+                {this.state.points >= vitIncrement && vit < 99 ?
+                  <span
+                    onClick={e => this.incStat(e)}
+                    data-stat="vit"
+                    onMouseDown={e => this.incStatPush(e)}
+                    onMouseUp={e => this.incStatRelease(e)}
+                    className={this.state.vitPress ? styles.trianglerpress : styles.triangler}
+                  >
+                  </span> :
+                  <span className={styles.trianglerhide}></span>
+                }
+              </td>
+              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{vitIncrement}</td>
+              <td>
+                &nbsp;
+              <span className={styles.underline}>Hit</span>
+              </td>
+              <td className={styles.textRight}>
+                <span className={styles.underline}>{hit}</span>
+              </td>
+              <td>
+                &nbsp;
+              <span className={styles.underline}>Flee</span>
+              </td>
+              <td>
+                <span className={styles.underline}>{flee} + {perfectDodge}</span>
+                &nbsp;
+            </td>
+            </tr>
+            <tr className={this.state.showStats ? styles.unhide : styles.hide}>
+              <td>&nbsp;Int&nbsp;</td>
+              <td className={[styles.background, styles.borderudl].join(' ')}>
+                <form onSubmit={e => this.preventDefault(e)}>
+                  <input
+                    className={styles.formlenstats}
+                    data-stat="int"
+                    placeholder={int}
+                    maxLength="2"
+                    type="text"
+                    pattern="[0-9]*"
+                    onKeyUp={e => this.statInput(e)}
+                    onBlur={e => this.clearInput(e)}
+                  />
+                </form>
+              </td>
+              <td className={[styles.background, styles.borderud].join(' ')}>{intBonus !== 0 && '+'}</td>
+              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{intBonus !== 0 && `${intBonus}`}</td>
+              <td className={styles.background}>
+                {this.state.points >= intIncrement && int < 99 ?
+                  <span
+                    onClick={e => this.incStat(e)}
+                    data-stat="int"
+                    onMouseDown={e => this.incStatPush(e)}
+                    onMouseUp={e => this.incStatRelease(e)}
+                    className={this.state.intPress ? styles.trianglerpress : styles.triangler}
+                  >
+                  </span> :
+                  <span className={styles.trianglerhide}></span>
+                }
+              </td>
+              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{intIncrement}</td>
+              <td>
+                &nbsp;
+              <span className={styles.underline}>Critical</span>
+              </td>
+              <td className={styles.textRight}>
+                <span className={styles.underline}>{crit}</span>
+              </td>
+              <td>
+                &nbsp;
+              <span className={styles.underline}>Aspd</span>
+              </td>
+              <td className={styles.textRight}>
+                <span className={styles.underline}>{aspd}</span>
+                &nbsp;
+            </td>
+            </tr>
+            <tr className={this.state.showStats ? styles.unhide : styles.hide}>
+              <td>&nbsp;Dex&nbsp;</td>
+              <td className={[styles.background, styles.borderudl].join(' ')}>
+                <form onSubmit={e => this.preventDefault(e)}>
+                  <input
+                    className={styles.formlenstats}
+                    data-stat="dex"
+                    placeholder={dex}
+                    maxLength="2"
+                    type="text"
+                    pattern="[0-9]*"
+                    onKeyUp={e => this.statInput(e)}
+                    onBlur={e => this.clearInput(e)}
+                  />
+                </form>
+              </td>
+              <td className={[styles.background, styles.borderud].join(' ')}>{dexBonus !== 0 && '+'}</td>
+              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{dexBonus !== 0 && `${dexBonus}`}</td>
+              <td className={styles.background}>
+                {this.state.points >= dexIncrement && dex < 99 ?
+                  <span
+                    onClick={e => this.incStat(e)}
+                    data-stat="dex"
+                    onMouseDown={e => this.incStatPush(e)}
+                    onMouseUp={e => this.incStatRelease(e)}
+                    className={this.state.dexPress ? styles.trianglerpress : styles.triangler}
+                  >
+                  </span> :
+                  <span className={styles.trianglerhide}></span>
+                }
+              </td>
+              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{dexIncrement}</td>
+              <td colSpan="2">
+                &nbsp;
+              <span className={styles.underline}>Status Point</span>
+              </td>
+              <td colSpan="2" className={styles.textRight}>
+                <span className={styles.underline}>{points}</span>
+                &nbsp;
+            </td>
+            </tr>
+            <tr className={this.state.showStats ? styles.unhide : styles.hide}>
+              <td>&nbsp;Luk&nbsp;</td>
+              <td className={[styles.background, styles.borderudl, styles.borderlast].join(' ')}>
+                <form onSubmit={e => this.preventDefault(e)}>
+                  <input
+                    className={styles.formlenstats}
+                    data-stat="luk"
+                    placeholder={luk}
+                    maxLength="2"
+                    type="text"
+                    pattern="[0-9]*"
+                    onKeyUp={e => this.statInput(e)}
+                    onBlur={e => this.clearInput(e)}
+                  />
+                </form>
+              </td>
+              <td className={[styles.background, styles.borderud, styles.borderlast].join(' ')}>{lukBonus !== 0 && '+'}</td>
+              <td className={[styles.textRight, styles.background, styles.borderud, styles.borderlast].join(' ')}>{lukBonus !== 0 && `${lukBonus}`}</td>
+              <td className={[styles.background, styles.borderlast].join(' ')}>
+                {this.state.points >= lukIncrement && luk < 99 ?
+                  <span
+                    onClick={e => this.incStat(e)}
+                    data-stat="luk"
+                    onMouseDown={e => this.incStatPush(e)}
+                    onMouseUp={e => this.incStatRelease(e)}
+                    className={this.state.lukPress ? styles.trianglerpress : styles.triangler}
+                  >
+                  </span> :
+                  <span className={styles.trianglerhide}></span>
+                }
+              </td>
+              <td className={[styles.textRight, styles.background, styles.borderurd, styles.borderlast].join(' ')}>{lukIncrement}</td>
+              <td>
+                &nbsp;
+              <span className={styles.underline}>Guild</span>
+              </td>
+              <td colSpan="3" className={styles.textRight}>
+                <span className={styles.underline}>
+                  <form onSubmit={e => this.preventDefault(e)} className={styles.guildform}>
+                    <input
+                      className={styles.formlenguild}
+                      data-name="guild"
+                      placeholder={guild}
+                      maxLength="15"
+                      type="text"
+                      onKeyUp={e => this.nameInput(e)}
+                      onBlur={e => this.clearInput(e)}
+                    />
+                  </form>
                 </span>
-                <span className={this.state.tooltip ? styles.tooltip : styles.hide}>
-                      Reset Status Points
-                </span>
-              </span>
-          </th>
-          <tr className={this.state.showStats ? styles.unhide : styles.hide}>
-            <td className={styles.borderu}>&nbsp;Str&nbsp;</td>
-            <td className={[styles.background, styles.borderudl].join(' ')}>
-              <form onSubmit={e=>this.preventDefault(e)}>
-                <input
-                  className={styles.formlenstats}
-                  data-stat="str"
-                  placeholder={str}
-                  maxlength="2"
-                  type="text"
-                  pattern="[0-9]*"
-                  onKeyUp={e=>this.statInput(e)}
-                  onBlur={e=>this.clearInput(e)}
-                />
-              </form>
+                &nbsp;
             </td>
-            <td className={[styles.background, styles.borderud].join(' ')}>{strBonus !== 0 && '+'}</td>
-            <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{strBonus !== 0 && `${strBonus}`}</td>
-            <td className={styles.background}>
-              {this.state.points >= strIncrement && str < 99 ?
-                <span 
-                  onClick={e=>this.incStat(e)}
-                  data-stat="str"
-                  onMouseDown={e=>this.incStatPush(e)}
-                  onMouseUp={e=>this.incStatRelease(e)}
-                  className={this.state.strPress ? styles.trianglerpress : styles.triangler }
-                >
-                </span> : 
-                <span className={styles.trianglerhide}></span>
-              }
-            </td>
-            <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{strIncrement}</td>
-            <td className={styles.borderu}>
-              &nbsp;
-              <span class={styles.underline}>Atk</span>
-            </td>
-            <td className={styles.borderu}>
-              <span class={styles.underline}>{atk} + {atkAdd}</span>
-            </td>
-            <td className={styles.borderu}>
-              &nbsp;
-              <span class={styles.underline}>Def</span>
-            </td>
-            <td className={[styles.textRight, styles.borderu].join(' ')}>
-              <span class={styles.underline}>{def} + {defAdd}</span>
-              &nbsp;
-            </td>
-          </tr>
-          <tr className={this.state.showStats ? styles.unhide : styles.hide}>
-            <td>&nbsp;Agi&nbsp;</td>
-            <td className={[styles.background, styles.borderudl].join(' ')}>
-              <form onSubmit={e=>this.preventDefault(e)}>
-                <input
-                  className={styles.formlenstats}
-                  data-stat="agi"
-                  placeholder={agi}
-                  maxlength="2"
-                  type="text"
-                  pattern="[0-9]*"
-                  onKeyUp={e=>this.statInput(e)}
-                  onBlur={e=>this.clearInput(e)}
-                />
-              </form>
-            </td>
-            <td className={[styles.background, styles.borderud].join(' ')}>{agiBonus !== 0 && '+'}</td>
-            <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{agiBonus !== 0 && `${agiBonus}`}</td>
-            <td className={styles.background}>
-              {this.state.points >= agiIncrement && agi < 99 ?
-                <span 
-                  onClick={e=>this.incStat(e)}
-                  data-stat="agi"
-                  onMouseDown={e=>this.incStatPush(e)}
-                  onMouseUp={e=>this.incStatRelease(e)}
-                  className={this.state.agiPress ? styles.trianglerpress : styles.triangler }
-                >
-                </span> : 
-                <span className={styles.trianglerhide}></span>
-              }
-            </td>
-            <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{agiIncrement}</td>
-            <td>
-              &nbsp;
-              <span class={styles.underline}>Matk</span>
-            </td>
-            <td>
-              <span class={styles.underline}>{matk} ~ {matkAdd}</span>
-            </td>
-            <td>
-              &nbsp;
-              <span class={styles.underline}>Mdef</span>
-            </td>
-            <td className={styles.textRight}>
-              <span class={styles.underline}>{mdef} + {mdefAdd}</span>
-              &nbsp;
-            </td>
-          </tr>
-          <tr className={this.state.showStats ? styles.unhide : styles.hide}>
-            <td>&nbsp;Vit&nbsp;</td>
-            <td className={[styles.background, styles.borderudl].join(' ')}>
-              <form onSubmit={e=>this.preventDefault(e)}>
-                <input
-                  className={styles.formlenstats}
-                  data-stat="vit"
-                  placeholder={vit}
-                  maxlength="2"
-                  type="text"
-                  pattern="[0-9]*"
-                  onKeyUp={e=>this.statInput(e)}
-                  onBlur={e=>this.clearInput(e)}
-                />
-              </form>
-            </td>
-            <td className={[styles.background, styles.borderud].join(' ')}>{vitBonus !== 0 && '+'}</td>
-            <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{vitBonus !== 0 && `${vitBonus}`}</td>
-            <td className={styles.background}>
-              {this.state.points >= vitIncrement && vit < 99 ?
-                <span 
-                  onClick={e=>this.incStat(e)}
-                  data-stat="vit"
-                  onMouseDown={e=>this.incStatPush(e)}
-                  onMouseUp={e=>this.incStatRelease(e)}
-                  className={this.state.vitPress ? styles.trianglerpress : styles.triangler }
-                >
-                </span> : 
-                <span className={styles.trianglerhide}></span>
-              }
-            </td>
-            <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{vitIncrement}</td>
-            <td>
-              &nbsp;
-              <span class={styles.underline}>Hit</span>
-            </td>
-            <td className={styles.textRight}>
-              <span class={styles.underline}>{hit}</span>
-            </td>
-            <td>
-              &nbsp;
-              <span class={styles.underline}>Flee</span>
-            </td>
-            <td>
-              <span class={styles.underline}>{flee} + {perfectDodge}</span>
-              &nbsp;
-            </td>
-          </tr>
-          <tr className={this.state.showStats ? styles.unhide : styles.hide}>
-            <td>&nbsp;Int&nbsp;</td>
-            <td className={[styles.background, styles.borderudl].join(' ')}>
-              <form onSubmit={e=>this.preventDefault(e)}>
-                <input
-                  className={styles.formlenstats}
-                  data-stat="int"
-                  placeholder={int}
-                  maxlength="2"
-                  type="text"
-                  pattern="[0-9]*"
-                  onKeyUp={e=>this.statInput(e)}
-                  onBlur={e=>this.clearInput(e)}
-                />
-              </form>
-            </td>
-            <td className={[styles.background, styles.borderud].join(' ')}>{intBonus !== 0 && '+'}</td>
-            <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{intBonus !== 0 && `${intBonus}`}</td>
-            <td className={styles.background}>
-              {this.state.points >= intIncrement && int < 99 ?
-                <span 
-                  onClick={e=>this.incStat(e)}
-                  data-stat="int"
-                  onMouseDown={e=>this.incStatPush(e)}
-                  onMouseUp={e=>this.incStatRelease(e)}
-                  className={this.state.intPress ? styles.trianglerpress : styles.triangler }
-                >
-                </span> : 
-                <span className={styles.trianglerhide}></span>
-              }
-            </td>
-            <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{intIncrement}</td>
-            <td>
-              &nbsp;
-              <span class={styles.underline}>Critical</span>
-            </td>
-            <td className={styles.textRight}>
-              <span class={styles.underline}>{crit}</span>
-            </td>
-            <td>
-              &nbsp;
-              <span class={styles.underline}>Aspd</span>
-            </td>
-            <td className={styles.textRight}>
-              <span class={styles.underline}>{aspd}</span>
-              &nbsp;
-            </td>
-          </tr>
-          <tr className={this.state.showStats ? styles.unhide : styles.hide}>
-            <td>&nbsp;Dex&nbsp;</td>
-            <td className={[styles.background, styles.borderudl].join(' ')}>
-              <form onSubmit={e=>this.preventDefault(e)}>
-                <input
-                  className={styles.formlenstats}
-                  data-stat="dex"
-                  placeholder={dex}
-                  maxlength="2"
-                  type="text"
-                  pattern="[0-9]*"
-                  onKeyUp={e=>this.statInput(e)}
-                  onBlur={e=>this.clearInput(e)}
-                />
-              </form>
-            </td>
-            <td className={[styles.background, styles.borderud].join(' ')}>{dexBonus !== 0 && '+'}</td>
-            <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{dexBonus !== 0 && `${dexBonus}`}</td>
-            <td className={styles.background}>
-              {this.state.points >= dexIncrement && dex < 99 ?
-                <span 
-                  onClick={e=>this.incStat(e)}
-                  data-stat="dex"
-                  onMouseDown={e=>this.incStatPush(e)}
-                  onMouseUp={e=>this.incStatRelease(e)}
-                  className={this.state.dexPress ? styles.trianglerpress : styles.triangler }
-                >
-                </span> : 
-                <span className={styles.trianglerhide}></span>
-              }
-            </td>
-            <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{dexIncrement}</td>
-            <td colspan="2">
-              &nbsp;
-              <span class={styles.underline}>Status Point</span>
-            </td>
-            <td colspan="2" className={styles.textRight}>
-            <span class={styles.underline}>{points}</span>
-              &nbsp;
-            </td>
-          </tr>
-          <tr className={this.state.showStats ? styles.unhide : styles.hide}>
-            <td>&nbsp;Luk&nbsp;</td>
-            <td className={[styles.background, styles.borderudl, styles.borderlast].join(' ')}>
-              <form onSubmit={e=>this.preventDefault(e)}>
-                <input
-                  className={styles.formlenstats}
-                  data-stat="luk"
-                  placeholder={luk}
-                  maxlength="2"
-                  type="text"
-                  pattern="[0-9]*"
-                  onKeyUp={e=>this.statInput(e)}
-                  onBlur={e=>this.clearInput(e)}
-                />
-              </form>
-            </td>
-            <td className={[styles.background, styles.borderud, styles.borderlast].join(' ')}>{lukBonus !== 0 && '+'}</td>
-            <td className={[styles.textRight, styles.background, styles.borderud, styles.borderlast].join(' ')}>{lukBonus !== 0 && `${lukBonus}`}</td>
-            <td className={[styles.background, styles.borderlast].join(' ')}>
-              {this.state.points >= lukIncrement && luk < 99 ?
-                <span 
-                  onClick={e=>this.incStat(e)}
-                  data-stat="luk"
-                  onMouseDown={e=>this.incStatPush(e)}
-                  onMouseUp={e=>this.incStatRelease(e)}
-                  className={this.state.lukPress ? styles.trianglerpress : styles.triangler }
-                >
-                </span> : 
-                <span className={styles.trianglerhide}></span>
-              }
-            </td>
-            <td className={[styles.textRight, styles.background, styles.borderurd, styles.borderlast].join(' ')}>{lukIncrement}</td>
-            <td>
-              &nbsp;
-              <span class={styles.underline}>Guild</span>
-            </td>
-            <td colspan="3" className={styles.textRight}>
-              <span class={styles.underline}>
-              <form onSubmit={e=>this.preventDefault(e)} className={styles.guildform}>
-                <input
-                  className={styles.formlenguild}
-                  data-name="guild"
-                  placeholder={guild}
-                  maxlength="15"
-                  type="text"
-                  onKeyUp={e=>this.nameInput(e)}
-                  onBlur={e=>this.clearInput(e)}
-                />
-              </form>
-              </span>
-              &nbsp;
-            </td>
-          </tr>
+            </tr>
+          </tbody>
         </table>
       </div>
     )
   }
 }
+
+const StatusPoints = connect(mapStateToProps, mapDispatchToProps)(ConnectedStatusPoints);
+
+export default StatusPoints;
+
+/*
+plan:
+class templates
+  {  
+    id: 1
+    basicInfo: {
+      name,
+      hpCurrent,
+      hpMax,
+      spCurrent,
+      spMax,
+      baseLvl,
+      jobLvl,
+      weightCurrent,
+      weightMax,
+      zeny,
+    },
+    char : {
+      gender,
+      face,
+      body,
+    },
+    equip: {
+      hat,
+      ear,
+      mouth,
+      body,
+      hand1,
+      hand2,
+      muffler,
+      feet,
+      acc1,
+      acc2,
+    },
+    status: {
+      basic: {
+        guild,
+        pointsLeft,
+        strBase,
+        strJob,
+        strEquip,
+        agiBase,
+        agiJob,
+        agiEquip,
+        vitBase,
+        vitJob,
+        vitEquip,
+        intBase,
+        intJob,
+        intEquip,
+        dexBase,
+        dexJob,
+        dexEquip,
+        lukBase,
+        lukJob,
+        lukEquip,
+      },
+      adv: {
+        atkEquip,
+        atkBonus,
+        defEquip,
+        defBonus,
+        matkEquip,
+        matkBonus,
+        mdefEquip,
+        mdefBonus,
+        hitEquip,
+        hitBonus,
+        fleeEquip,
+        fleeBonus,
+        critEquip,
+        critBonus,
+        aspdBase,
+        aspdEquip,
+        aspdBonus,
+      }
+    },
+    skills {
+      varies by class...
+    }
+  }
+*/

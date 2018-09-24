@@ -17,19 +17,20 @@ module.exports = {
         exclude: [/node_modules/],
         use: [{
           loader: 'babel-loader',
-          options: {
-            presets: [['@babel/preset-env', { "modules": false }], '@babel/preset-react']
-          }
+          // options: {
+          //   presets: [['@babel/preset-env', { "modules": false,
+          //   "shippedProposals": true
+          //   }], '@babel/preset-react']
+          // }
         }],
       },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
-    ]
+    ],
   },
   performance: {
     hints: false
   },
-  mode: 'production'
 }

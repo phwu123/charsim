@@ -1,0 +1,1 @@
+export const INCREASE_STR = 'INCREASE_STR';
