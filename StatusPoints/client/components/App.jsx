@@ -27,9 +27,6 @@ export default class App extends Component {
         top: e.clientY - 0.012 * window.innerHeight + 'px',
         left: e.clientX - 0.16 * window.innerWidth + 'px'
       },
-    }, () => {
-      console.log('width ', window.innerWidth);
-      console.log('height ', window.innerHeight);
     })
   }
 
