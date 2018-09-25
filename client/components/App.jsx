@@ -59,8 +59,8 @@ export default class App extends Component {
     this.setState({
       coordinates: {
         position: 'absolute',
-        top: e.pageY - 10 + 'px',
-        left: e.pageX - 160 + 'px'
+        top: e.pageY - 8 + 'px',
+        left: e.pageX - 214 + 'px'
       },
     })
   }

@@ -1,16 +1,36 @@
 import React, { Component } from 'react';
 import styles from './StatusPoints.css';
 import { connect } from 'react-redux';
-import * as incStats from './actions';
+import * as action from './actions';
 import store from './store';
+import StatusChange from './StatusChange.jsx';
 
 const mapStateToProps = (state) => {
-  return { all: state }
+  return { 
+    all: state.status.basic,
+    adv: state.status.adv,
+    str: state.status.basic.strBase,
+    agi: state.status.basic.agiBase,
+    vit: state.status.basic.vitBase,
+    int: state.status.basic.intBase,
+    dex: state.status.basic.dexBase,
+    luk: state.status.basic.lukBase,
+    guild: state.status.basic.guild,
+    points: state.status.basic.pointsLeft,
+  };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    incStr: (stat) => dispatch(incStats.incStr(stat)),
+    incstr: (num) => dispatch(action.incstr(num)),
+    incagi: (num) => dispatch(action.incagi(num)),
+    incvit: (num) => dispatch(action.incvit(num)),
+    incint: (num) => dispatch(action.incint(num)),
+    incdex: (num) => dispatch(action.incdex(num)),
+    incluk: (num) => dispatch(action.incluk(num)),
+    guildName: (name) => dispatch(action.guildName(name)),
+    setPoints: (increment) => dispatch(action.setPoints(increment)),
+    resetStats: () => dispatch(action.resetStats()),
   };
 }
 
@@ -38,14 +58,14 @@ class ConnectedStatusPoints extends Component {
       },
       showStats: true,
     }
+    this.incStat = this.incStat.bind(this);
+    this.incStatPush = this.incStatPush.bind(this);
+    this.incStatRelease = this.incStatRelease.bind(this);
+    this.statInput = this.statInput.bind(this);
   }
 
   componentDidMount() {
-    this.validateStats();
-    const strBase = this.state.baseStats.str + 2;
-    this.props.incStr(strBase);
-    console.log(store.getState())
-    console.log(this.props.all);
+  //  console.log(store.getState())
   }
 
   clickCloseStats() {
@@ -54,37 +74,24 @@ class ConnectedStatusPoints extends Component {
 
   validateStats() {
     let pointsLeft = 1325
-    const baseStats = { ...this.state.baseStats }
-    for (let stats in baseStats) {
-      const stat = baseStats[stats];
-      let count = 1;
-      let increment = 2;
-      while (count < stat && pointsLeft >= increment) {
-        increment = Math.floor((count - 1) / 10) + 2;
-        pointsLeft -= increment
-        count += 1;
+    for (let stats in this.props.all) {
+      if (stats[3] === 'B') {
+        const stat = this.props.all[stats];
+        let count = 1;
+        let increment = 2;
+        while (count < stat && pointsLeft >= increment) {
+          increment = Math.floor((count - 1) / 10) + 2;
+          pointsLeft -= increment
+          count += 1;
+        }
       }
-      // if (stat > 91) pointsLeft -= 540 + (11 * (stat - 91));
-      // else if (stat > 81) pointsLeft -= 440 + (10 * (stat - 81));
-      // else if (stat > 71) pointsLeft -= 350 + (9 * (stat - 71));
-      // else if (stat > 61) pointsLeft -= 270 + (8 * (stat - 61));
-      // else if (stat > 51) pointsLeft -= 200 + (7 * (stat - 51));
-      // else if (stat > 41) pointsLeft -= 140 + (6 * (stat - 41));
-      // else if (stat > 31) pointsLeft -= 90 + (5 * (stat - 31));
-      // else if (stat > 21) pointsLeft -= 50 + (4 * (stat - 21));
-      // else if (stat > 11) pointsLeft -= 20 + (3 * (stat - 11));
-      // else  pointsLeft -= 2 * (stat - 1);
     }
-    this.setState({ points: pointsLeft },
-      () => {
-        return pointsLeft;
-      });
+    this.props.setPoints(pointsLeft);
   }
 
-  maxAllowed(stat) {
-    let points = this.state.points;
-    const baseStats = { ...this.state.baseStats };
-    stat = baseStats[stat];
+  maxAllowed(type) {
+    let points = this.props.points;
+    let stat = this.props.all[`${type}Base`]
     let increment = Math.floor((stat - 1) / 10) + 2;
     while (points >= increment && stat < 99) {
       increment = Math.floor((stat - 1) / 10) + 2;
@@ -95,39 +102,31 @@ class ConnectedStatusPoints extends Component {
   }
 
   statInput(e) {
-    const baseStats = { ...this.state.baseStats };
     const stat = e.target.dataset.stat;
-    const statInput = stat + 'Input';
-    const value = e.target.validity.valid && e.target.value > 0 ? e.target.value : 1;
+    const value = e.target.validity.valid && e.target.value > 0 ? Number(e.target.value) : 1;
     const maxStat = this.maxAllowed(stat);
-    if (Number(value) > maxStat) {
-      baseStats[stat] = maxStat;
-      this.setState({ baseStats }, () => {
-        this.validateStats();
-      });
-    } else {
-      this.setState(
-        { [statInput]: Number(value) },
-        () => {
-          baseStats[stat] = this.state[statInput];
-          this.setState({ baseStats }, () => {
-            this.validateStats();
-          });
+    this.setState(
+      { [`${stat}Input`]: value}, () => {
+        const input = this.state[`${stat}Input`];
+        if (input > maxStat) {
+          this.props[`inc${stat}`](maxStat);
+        } else {
+          this.props[`inc${stat}`](input);
         }
-      );
-    }
+        setTimeout(() => {
+          this.validateStats();
+        }, 0);
+      }
+    );
   }
 
   incStat(e) {
     const statType = e.target.dataset.stat;
-    const stat = this.state.baseStats[statType];
-    const statIncrement = Math.floor((stat - 1) / 10) + 2;
-    const baseStats = { ...this.state.baseStats };
-    baseStats[statType] += 1;
-    this.setState({
-      points: this.state.points - statIncrement,
-      baseStats,
-    });
+    const props = this.props;
+    const stat = props[`${statType}`];
+    const increment = Math.floor((stat - 1) / 10) + 2;
+    props[`inc${statType}`](stat + 1);
+    props.setPoints(props.points - increment);
   }
 
   incStatPush(e) {
@@ -153,11 +152,7 @@ class ConnectedStatusPoints extends Component {
   }
 
   resetStats() {
-    const baseStats = { ...this.state.baseStats };
-    for (let stat in baseStats) {
-      baseStats[stat] = 1;
-    }
-    this.setState({ baseStats, points: 1325 });
+    this.props.resetStats();
   }
 
   tooltipOn(e) {
@@ -169,65 +164,41 @@ class ConnectedStatusPoints extends Component {
   }
 
   nameInput(e) {
-    this.setState({ guild: e.target.value });
+    this.setState({ guild: e.target.value }, () => {
+      this.props.guildName(this.state.guild);
+    });
   }
 
   render() {
-    const guild = this.state.guild;
+    const { guild, str, agi, vit, int, dex, luk } = this.props;
+    const { atkBonus, defSoftBonus, defHardBase, defHardBonus, matkBonus, mdefSoftBonus, mdefHardBase, mdefHardBonus, hitBonus, fleeBonus, critBonus, aspdBase, aspdBonus } = this.props.adv;
+    //formulas mostly based on https://irowiki.org/classic/Stats
 
-    const str = this.state.baseStats.str;
-    const strBonus = this.state.addStats.str;
-    const agi = this.state.baseStats.agi;
-    const agiBonus = this.state.addStats.agi;
-    const vit = this.state.baseStats.vit;
-    const vitBonus = this.state.addStats.vit;
-    const int = this.state.baseStats.int;
-    const intBonus = this.state.addStats.int;
-    const dex = this.state.baseStats.dex;
-    const dexBonus = this.state.addStats.dex;
-    const luk = this.state.baseStats.luk;
-    const lukBonus = this.state.addStats.luk;
-
-    const points = this.state.points;
-
-//formulas mostly based on https://irowiki.org/classic/Stats
-
-    const baseLvl = 99;
-    const baseAtk = Math.floor((baseLvl / 4) + str + dex / 5 + luk / 5) + Math.floor(str / 10) * 2 - 1;
-    const baseDef = Math.floor(vit / 2 + Math.max(vit * 0.3, vit * vit / 150 - 1));
-    const baseMatk = int + Math.floor(int / 7) * Math.floor(int / 7);
-    const baseMdef = Math.floor(int + vit / 5 + dex / 5 + baseLvl / 4);
-    const baseHit = 175 + baseLvl + dex + Math.floor(luk / 3);
-    const baseCrit = luk * 0.3 + 1;
-    const baseFlee = 100 + baseLvl + agi + Math.floor(luk / 5);
+    const levelBase = 99;
+    const atkBase = Math.floor((levelBase / 4) + str + dex / 5 + luk / 5) + Math.floor(str / 10) * 2 - 1;
+    const defBase = Math.floor(vit / 2 + Math.max(vit * 0.3, vit * vit / 150 - 1));
+    const matkBase = int + Math.floor(int / 7) * Math.floor(int / 7);
+    const mdefBase = Math.floor(int + vit / 5 + dex / 5 + levelBase / 4);
+    const hitBase = 175 + levelBase + dex + Math.floor(luk / 3);
+    const critBase = luk * 0.3 + 1;
+    const fleeBase = 100 + levelBase + agi + Math.floor(luk / 5);
     //aspd formula? => https://www.novaragnarok.com/wiki/Attack_Speed
-    const baseAspd = 156;
     const aspdEquip = 5 + 3;
     const aspdStatBonus = Math.sqrt(dex * dex / 5 + agi * agi / 2) / 4;
 
-    const atk = baseAtk;
-    const atkAdd = 0;
-    const def = baseDef;
-    const defAdd = 0;
-    const matkMin = baseMatk;
-    const matkMax = int + Math.floor(int / 5) * Math.floor(int / 5);
-    const matkAdd = 0;
-    const mdef = baseMdef;
-    const mdefAdd = 0;
-    const hit = baseHit;
-    const crit = Math.floor(baseCrit);
-    const flee = baseFlee;
+    const atk = atkBase + atkBonus;
+    const defSoft = defBase + defSoftBonus;
+    const defHard = defHardBase + defHardBonus;
+    const matkMin = matkBase + matkBonus;
+    const matkMax = int + Math.floor(int / 5) * Math.floor(int / 5) + matkBonus;
+    const mdefSoft = mdefBase + mdefSoftBonus;
+    const mdefHard = mdefHardBase + mdefHardBonus;
+    const hit = hitBase + hitBonus;
+    const crit = Math.floor(critBase) + critBonus;
+    const flee = fleeBase + fleeBonus;
     const perfectDodge = Math.floor(luk / 10) + 1;
 
-    const aspdBase = baseAspd - aspdEquip + aspdStatBonus + (aspdStatBonus * agi / 200);
-    const aspd = Math.floor(aspdBase);
-
-    const strIncrement = Math.floor((str - 1) / 10) + 2;
-    const agiIncrement = Math.floor((agi - 1) / 10) + 2;
-    const vitIncrement = Math.floor((vit - 1) / 10) + 2;
-    const intIncrement = Math.floor((int - 1) / 10) + 2;
-    const dexIncrement = Math.floor((dex - 1) / 10) + 2;
-    const lukIncrement = Math.floor((luk - 1) / 10) + 2;
+    const aspd = Math.floor(aspdBase - aspdEquip + aspdStatBonus + (aspdStatBonus * agi / 200));
 
     return (
       <div>
@@ -258,89 +229,49 @@ class ConnectedStatusPoints extends Component {
           <tbody>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td className={styles.borderu}>&nbsp;Str&nbsp;</td>
-              <td className={[styles.background, styles.borderudl].join(' ')}>
-                <form onSubmit={e => this.preventDefault(e)}>
-                  <input
-                    className={styles.formlenstats}
-                    data-stat="str"
-                    placeholder={str}
-                    maxLength="2"
-                    type="text"
-                    pattern="[0-9]*"
-                    onKeyUp={e => this.statInput(e)}
-                    onBlur={e => this.clearInput(e)}
-                  />
-                </form>
-              </td>
-              <td className={[styles.background, styles.borderud].join(' ')}>{strBonus !== 0 && '+'}</td>
-              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{strBonus !== 0 && `${strBonus}`}</td>
-              <td className={styles.background}>
-                {this.state.points >= strIncrement && str < 99 ?
-                  <span
-                    onClick={e => this.incStat(e)}
-                    data-stat="str"
-                    onMouseDown={e => this.incStatPush(e)}
-                    onMouseUp={e => this.incStatRelease(e)}
-                    className={this.state.strPress ? styles.trianglerpress : styles.triangler}
-                  >
-                  </span> :
-                  <span className={styles.trianglerhide}></span>
-                }
-              </td>
-              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{strIncrement}</td>
+              <StatusChange 
+                statInput={this.statInput}
+                clearInput={this.clearInput}
+                incStat={this.incStat}
+                incStatPush={this.incStatPush}
+                incStatRelease={this.incStatRelease}
+                preventDefault={this.preventDefault} 
+                strPress={this.state.strPress} 
+                stat="str"
+              />
               <td className={styles.borderu}>
                 &nbsp;
-              <span className={styles.underline}>Atk</span>
+                <span className={styles.underline}>Atk</span>
               </td>
               <td className={styles.borderu}>
-                <span className={styles.underline}>{atk} + {atkAdd}</span>
+                <span className={styles.underline}>{atk} + {atkBonus}</span>
               </td>
               <td className={styles.borderu}>
                 &nbsp;
               <span className={styles.underline}>Def</span>
               </td>
               <td className={[styles.textRight, styles.borderu].join(' ')}>
-                <span className={styles.underline}>{def} + {defAdd}</span>
+                <span className={styles.underline}>{defSoft} + {defHard}</span>
                 &nbsp;
             </td>
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Agi&nbsp;</td>
-              <td className={[styles.background, styles.borderudl].join(' ')}>
-                <form onSubmit={e => this.preventDefault(e)}>
-                  <input
-                    className={styles.formlenstats}
-                    data-stat="agi"
-                    placeholder={agi}
-                    maxLength="2"
-                    type="text"
-                    pattern="[0-9]*"
-                    onKeyUp={e => this.statInput(e)}
-                    onBlur={e => this.clearInput(e)}
-                  />
-                </form>
-              </td>
-              <td className={[styles.background, styles.borderud].join(' ')}>{agiBonus !== 0 && '+'}</td>
-              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{agiBonus !== 0 && `${agiBonus}`}</td>
-              <td className={styles.background}>
-                {this.state.points >= agiIncrement && agi < 99 ?
-                  <span
-                    onClick={e => this.incStat(e)}
-                    data-stat="agi"
-                    onMouseDown={e => this.incStatPush(e)}
-                    onMouseUp={e => this.incStatRelease(e)}
-                    className={this.state.agiPress ? styles.trianglerpress : styles.triangler}
-                  >
-                  </span> :
-                  <span className={styles.trianglerhide}></span>
-                }
-              </td>
-              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{agiIncrement}</td>
+              <StatusChange 
+                statInput={this.statInput}
+                clearInput={this.clearInput}
+                incStat={this.incStat}
+                incStatPush={this.incStatPush}
+                incStatRelease={this.incStatRelease}
+                preventDefault={this.preventDefault} 
+                agiPress={this.state.agiPress} 
+                stat="agi"
+              />
               <td>
                 &nbsp;
               <span className={styles.underline}>Matk</span>
               </td>
-              <td>
+              <td className={styles.textRight}>
                 <span className={styles.underline}>{matkMin} ~ {matkMax}</span>
               </td>
               <td>
@@ -348,42 +279,22 @@ class ConnectedStatusPoints extends Component {
               <span className={styles.underline}>Mdef</span>
               </td>
               <td className={styles.textRight}>
-                <span className={styles.underline}>{mdef} + {mdefAdd}</span>
+                <span className={styles.underline}>{mdefSoft} + {mdefHard}</span>
                 &nbsp;
             </td>
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Vit&nbsp;</td>
-              <td className={[styles.background, styles.borderudl].join(' ')}>
-                <form onSubmit={e => this.preventDefault(e)}>
-                  <input
-                    className={styles.formlenstats}
-                    data-stat="vit"
-                    placeholder={vit}
-                    maxLength="2"
-                    type="text"
-                    pattern="[0-9]*"
-                    onKeyUp={e => this.statInput(e)}
-                    onBlur={e => this.clearInput(e)}
-                  />
-                </form>
-              </td>
-              <td className={[styles.background, styles.borderud].join(' ')}>{vitBonus !== 0 && '+'}</td>
-              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{vitBonus !== 0 && `${vitBonus}`}</td>
-              <td className={styles.background}>
-                {this.state.points >= vitIncrement && vit < 99 ?
-                  <span
-                    onClick={e => this.incStat(e)}
-                    data-stat="vit"
-                    onMouseDown={e => this.incStatPush(e)}
-                    onMouseUp={e => this.incStatRelease(e)}
-                    className={this.state.vitPress ? styles.trianglerpress : styles.triangler}
-                  >
-                  </span> :
-                  <span className={styles.trianglerhide}></span>
-                }
-              </td>
-              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{vitIncrement}</td>
+              <StatusChange 
+                statInput={this.statInput}
+                clearInput={this.clearInput}
+                incStat={this.incStat}
+                incStatPush={this.incStatPush}
+                incStatRelease={this.incStatRelease}
+                preventDefault={this.preventDefault} 
+                vitPress={this.state.vitPress} 
+                stat="vit"
+              />
               <td>
                 &nbsp;
               <span className={styles.underline}>Hit</span>
@@ -402,36 +313,16 @@ class ConnectedStatusPoints extends Component {
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Int&nbsp;</td>
-              <td className={[styles.background, styles.borderudl].join(' ')}>
-                <form onSubmit={e => this.preventDefault(e)}>
-                  <input
-                    className={styles.formlenstats}
-                    data-stat="int"
-                    placeholder={int}
-                    maxLength="2"
-                    type="text"
-                    pattern="[0-9]*"
-                    onKeyUp={e => this.statInput(e)}
-                    onBlur={e => this.clearInput(e)}
-                  />
-                </form>
-              </td>
-              <td className={[styles.background, styles.borderud].join(' ')}>{intBonus !== 0 && '+'}</td>
-              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{intBonus !== 0 && `${intBonus}`}</td>
-              <td className={styles.background}>
-                {this.state.points >= intIncrement && int < 99 ?
-                  <span
-                    onClick={e => this.incStat(e)}
-                    data-stat="int"
-                    onMouseDown={e => this.incStatPush(e)}
-                    onMouseUp={e => this.incStatRelease(e)}
-                    className={this.state.intPress ? styles.trianglerpress : styles.triangler}
-                  >
-                  </span> :
-                  <span className={styles.trianglerhide}></span>
-                }
-              </td>
-              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{intIncrement}</td>
+              <StatusChange 
+                statInput={this.statInput}
+                clearInput={this.clearInput}
+                incStat={this.incStat}
+                incStatPush={this.incStatPush}
+                incStatRelease={this.incStatRelease}
+                preventDefault={this.preventDefault} 
+                intPress={this.state.intPress} 
+                stat="int"
+              />
               <td>
                 &nbsp;
               <span className={styles.underline}>Critical</span>
@@ -450,77 +341,37 @@ class ConnectedStatusPoints extends Component {
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Dex&nbsp;</td>
-              <td className={[styles.background, styles.borderudl].join(' ')}>
-                <form onSubmit={e => this.preventDefault(e)}>
-                  <input
-                    className={styles.formlenstats}
-                    data-stat="dex"
-                    placeholder={dex}
-                    maxLength="2"
-                    type="text"
-                    pattern="[0-9]*"
-                    onKeyUp={e => this.statInput(e)}
-                    onBlur={e => this.clearInput(e)}
-                  />
-                </form>
-              </td>
-              <td className={[styles.background, styles.borderud].join(' ')}>{dexBonus !== 0 && '+'}</td>
-              <td className={[styles.textRight, styles.background, styles.borderud].join(' ')}>{dexBonus !== 0 && `${dexBonus}`}</td>
-              <td className={styles.background}>
-                {this.state.points >= dexIncrement && dex < 99 ?
-                  <span
-                    onClick={e => this.incStat(e)}
-                    data-stat="dex"
-                    onMouseDown={e => this.incStatPush(e)}
-                    onMouseUp={e => this.incStatRelease(e)}
-                    className={this.state.dexPress ? styles.trianglerpress : styles.triangler}
-                  >
-                  </span> :
-                  <span className={styles.trianglerhide}></span>
-                }
-              </td>
-              <td className={[styles.textRight, styles.background, styles.borderurd].join(' ')}>{dexIncrement}</td>
+              <StatusChange 
+                statInput={this.statInput}
+                clearInput={this.clearInput}
+                incStat={this.incStat}
+                incStatPush={this.incStatPush}
+                incStatRelease={this.incStatRelease}
+                preventDefault={this.preventDefault} 
+                dexPress={this.state.dexPress} 
+                stat="dex"
+              />
               <td colSpan="2">
                 &nbsp;
               <span className={styles.underline}>Status Point</span>
               </td>
               <td colSpan="2" className={styles.textRight}>
-                <span className={styles.underline}>{points}</span>
+                <span className={styles.underline}>{this.props.points}</span>
                 &nbsp;
             </td>
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Luk&nbsp;</td>
-              <td className={[styles.background, styles.borderudl, styles.borderlast].join(' ')}>
-                <form onSubmit={e => this.preventDefault(e)}>
-                  <input
-                    className={styles.formlenstats}
-                    data-stat="luk"
-                    placeholder={luk}
-                    maxLength="2"
-                    type="text"
-                    pattern="[0-9]*"
-                    onKeyUp={e => this.statInput(e)}
-                    onBlur={e => this.clearInput(e)}
-                  />
-                </form>
-              </td>
-              <td className={[styles.background, styles.borderud, styles.borderlast].join(' ')}>{lukBonus !== 0 && '+'}</td>
-              <td className={[styles.textRight, styles.background, styles.borderud, styles.borderlast].join(' ')}>{lukBonus !== 0 && `${lukBonus}`}</td>
-              <td className={[styles.background, styles.borderlast].join(' ')}>
-                {this.state.points >= lukIncrement && luk < 99 ?
-                  <span
-                    onClick={e => this.incStat(e)}
-                    data-stat="luk"
-                    onMouseDown={e => this.incStatPush(e)}
-                    onMouseUp={e => this.incStatRelease(e)}
-                    className={this.state.lukPress ? styles.trianglerpress : styles.triangler}
-                  >
-                  </span> :
-                  <span className={styles.trianglerhide}></span>
-                }
-              </td>
-              <td className={[styles.textRight, styles.background, styles.borderurd, styles.borderlast].join(' ')}>{lukIncrement}</td>
+              <StatusChange 
+                statInput={this.statInput}
+                clearInput={this.clearInput}
+                incStat={this.incStat}
+                incStatPush={this.incStatPush}
+                incStatRelease={this.incStatRelease}
+                preventDefault={this.preventDefault} 
+                lukPress={this.state.lukPress} 
+                stat="luk"
+              />
               <td>
                 &nbsp;
               <span className={styles.underline}>Guild</span>

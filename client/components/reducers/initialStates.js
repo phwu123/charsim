@@ -30,13 +30,17 @@ const getInitialState = (job) => {
       },
       adv: {
         atkBonus: 0,
-        defBonus: 0,
+        defSoftBonus: 0,
+        defHardBase: 0,
+        defHardBonus: 0,
         matkBonus: 0,
-        mdefBonus: 0,
+        mdefSoftBonus: 0,
+        mdefHardBase: 0,
+        mdefHardBonus: 0,
         hitBonus: 0,
         fleeBonus: 0,
         critBonus: 0,
-        aspdBase: 0,
+        aspdBase: 156,
         aspdBonus: 0,
       }
     }
