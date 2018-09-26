@@ -12,7 +12,6 @@ export default class Menu extends Component {
 
   statusToggle() {
     this.setState({ showStatus: !this.state.showStatus });
-    console.log('toggling', this.state.showStatus )
   }
 
   onDragOver(e) {
@@ -24,7 +23,7 @@ export default class Menu extends Component {
     this.setState({
       coordinates: {
         position: 'absolute',
-        top: e.clientY - 0.012 * window.innerHeight + 'px',
+        top: e.clientY + 0.012 * window.innerHeight + 'px',
         left: e.clientX - 0.16 * window.innerWidth + 'px'
       },
     }, () => {
