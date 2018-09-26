@@ -5,7 +5,31 @@
   line-height: 1;
   border-collapse: separate;
   border-spacing: 0;
-  padding-bottom: 2px;
+  padding-bottom: 0;
+}
+
+:local(.header) {
+  background: linear-gradient(135deg,#c1e4fc, #89d4eb, #c1e4fc, #89d4eb, #c1e4fc);
+  background-color: #89d4eb;
+  border-spacing: 0;
+
+}
+
+:local(.roundedl) {
+  border-radius: 5px 0 0 0;
+}
+
+:local(.roundedlmin) {
+  border-radius: 5px 0 0 5px;
+}
+
+:local(.roundedr) {
+  border-radius: 0 5px 0 0;
+  padding-left: 30px;
+}
+
+:local(.roundedrmin) {
+  border-radius: 0 5px 5px 0;
 }
 
 :local(.formlenguild) {
@@ -58,23 +82,11 @@
   transform: translateY(-25px);
 }
 
-:local(.floatr) {
-  float: right;
-}
-
 :local(.dotletter) {
   position: absolute;
   font-size: 70%;
   font-weight: 600;
   margin: -2px 1px;
-}
-
-
-:local(.header) {
-  background: linear-gradient(135deg,#c1e4fc, #89d4eb, #c1e4fc, #89d4eb, #c1e4fc);
-  background-color: #89d4eb;
-  border-spacing: 0;
-  border-radius: 5px 5px 0 0;
 }
 
 :local(.textRight) {

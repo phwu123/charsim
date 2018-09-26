@@ -23,10 +23,9 @@ export default class Menu extends Component {
     this.setState({
       coordinates: {
         position: 'absolute',
-        top: e.clientY + 0.012 * window.innerHeight + 'px',
+        top: e.clientY + 'px',
         left: e.clientX - 0.16 * window.innerWidth + 'px'
       },
-    }, () => {
     })
   }
 

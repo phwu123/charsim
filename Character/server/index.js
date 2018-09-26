@@ -11,7 +11,7 @@ app.use(parser.json());
 
 app.use(express.static(path.join(__dirname, '../static')));
 
-const port = 3600;
+const port = 3602;
 
 app.listen(port, () => {
   console.log('server listening on port ', port);

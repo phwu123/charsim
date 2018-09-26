@@ -1,0 +1,107 @@
+:local(.table) {
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 1px 2px 10px 0 rgba(0,0,0,0.5);
+  line-height: 1;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+:local(.title) {
+  background: linear-gradient(135deg,#c1e4fc, #89d4eb, #c1e4fc, #89d4eb, #c1e4fc);
+  background-color: #89d4eb;
+  border-spacing: 0;
+  border-radius: 5px 5px 0 0;
+}
+
+:local(.grid) {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr 3fr 1fr;
+  grid-template-rows: 1fr 2fr 2fr 2fr 2fr 2fr;
+  border: 2px solid blue;
+  align-items: center;
+  border-radius: 5px;
+}
+
+:local(.header) {
+  background-color: gray;
+  background: linear-gradient(45deg,#76a5f7, #7e9fd9, #c1e4fc, #76a5f7, #7e9fd9);
+  grid-column: 1 / 5;
+}
+
+:local(.male) {
+  grid-column: 1 / 2;
+  justify-self: center;
+}
+
+:local(.female) {
+  grid-column: 2 / 3;
+  justify-self: center;
+}
+
+:local(.jobType) {
+  grid-column: 3 / 4;
+  justify-self: center;
+}
+
+:local(.head1) {
+  grid-column: 4 / 5;
+  justify-self: center;
+}
+
+:local(.head2) {
+  grid-area: 3 / 4 / 4 / 5;
+  justify-self: center;
+}
+
+:local(.head3) {
+  grid-area: 4 / 4 / 5 / 5;
+  justify-self: center;
+}
+
+:local(.head4) {
+  grid-area: 5 / 4 / 6 / 5;
+  justify-self: center;
+}
+
+:local(.head5) {
+  grid-area: 6 / 4;
+  justify-self: center;
+}
+
+:local(.name) {
+  grid-area: 6 / 3;
+  justify-self: center;
+}
+
+:local(.pic) {
+  grid-area: 3 / 3 / 6 / 4;
+  justify-self: center;
+}
+
+
+:local(.menu) {
+  min-height: 100vh;
+  border-right: 2px solid #9acbec;
+  background: linear-gradient(135deg,#76a5f7, #7e9fd9, #c1e4fc, #76a5f7, #7e9fd9);
+  text-align: center;
+}
+
+:local(.statusb) {
+  border: 1px solid #959595;
+  background: linear-gradient(#f4feff, #e8f6f7, #e7eced, #ebf3f4, #e8f6f7);
+  box-shadow: 1px 2px 10px 0 rgba(0,0,0,0.2);
+  margin-left: 2vw;
+  transform: translateY(50%);
+}
+
+:local(.statusb:hover) {
+  background: linear-gradient(#a0d8f8, #c0e8f7, #acd8e3, #a0d8f8, #c0e8f7, #c0e8f7);
+}
+
+:local(.sim) {
+  height: 90vh;
+  width: 90vw;
+  background: linear-gradient(45deg,#76a5f7, #7e9fd9, #c1e4fc, #76a5f7, #7e9fd9);
+}
+

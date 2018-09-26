@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styles from './StatusPoints.css';
 import { connect } from 'react-redux';
 import * as action from './actions';
-import store from './store';
 import StatusChange from './StatusChange.jsx';
 
 const mapStateToProps = (state) => {
@@ -38,24 +37,6 @@ class ConnectedStatusPoints extends Component {
   constructor() {
     super()
     this.state = {
-      guild: 'None',
-      points: 1325,
-      baseStats: {
-        str: 1,
-        agi: 1,
-        vit: 1,
-        int: 1,
-        dex: 1,
-        luk: 1,
-      },
-      addStats: {
-        str: 9,
-        agi: 7,
-        vit: 10,
-        int: 7,
-        dex: 8,
-        luk: 3,
-      },
       showStats: true,
     }
     this.incStat = this.incStat.bind(this);
@@ -205,11 +186,11 @@ class ConnectedStatusPoints extends Component {
         <table className={styles.status}>
           <thead className={styles.header}>
             <tr>
-              <td colSpan="9">
+              <th className={this.state.showStats ? styles.roundedl : styles.roundedlmin} colSpan="9">
                 <span className={styles.dotmove} draggable onDragStart={e => this.onDragStart(e)}></span>
                 <span>Status</span>
-              </td>
-              <td className={styles.floatr}>
+              </th>
+              <th className={this.state.showStats ? styles.roundedr : styles.roundedrmin}>
                 <div className={styles.dot}>
                   <div className={styles.dotletter} onClick={e => this.clickCloseStats()}>
                     -
@@ -223,7 +204,7 @@ class ConnectedStatusPoints extends Component {
                 <div className={this.state.tooltip ? styles.tooltip : styles.hide}>
                   Reset Status Points
                 </div>
-              </td>
+              </th>
             </tr>
           </thead>
           <tbody>
