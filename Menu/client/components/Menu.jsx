@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import StatusPoints from './StatusPoints.jsx';
-import styles from './App.css';
+import styles from './Menu.css';
 
-export default class App extends Component {
+export default class Menu extends Component {
   constructor() {
     super();
     this.state = {
@@ -13,6 +12,7 @@ export default class App extends Component {
 
   statusToggle() {
     this.setState({ showStatus: !this.state.showStatus });
+    console.log('toggling', this.state.showStatus )
   }
 
   onDragOver(e) {
@@ -27,21 +27,21 @@ export default class App extends Component {
         top: e.clientY - 0.012 * window.innerHeight + 'px',
         left: e.clientX - 0.16 * window.innerWidth + 'px'
       },
+    }, () => {
     })
   }
 
   render() {
     const sims = [];
-    const components = [StatusPoints];
+    const components = ['StatusPoints'];
     components.forEach((C, i) => {
       sims.push(
-        <div 
-          className={this.state.showStatus ?
-            `visible` : `invisible`} 
-          style={this.state.coordinates}
+        <div
           key={i}
+          className={this.state.showStatus ? `visible` : `invisible`}
+          style={this.state.coordinates}
+          id={C}
         >
-          <C/>
         </div>
       );
     })
@@ -58,25 +58,24 @@ export default class App extends Component {
           </div>
           <div className={`col-sm-10`}>
             <div className={styles.header}>
-              <button 
-                onClick={e=>this.statusToggle()} 
+              <button
+                onClick={e => this.statusToggle()}
                 type="button"
-                className={ this.state.showStatus ?
+                className={this.state.showStatus ?
                   [`btn`, styles.statusbp].join(' ') :
                   [`btn`, styles.statusb].join(' ')}>
                 Status
               </button>
             </div>
-            
-            <div 
+
+            <div
               className={styles.sim}
-              onDragOver={(e)=>this.onDragOver(e)} 
-              onDrop={(e)=>this.onDrop(e)}>
+              onDragOver={(e) => this.onDragOver(e)}
+              onDrop={(e) => this.onDrop(e)}>
               {sims.map(s => (
                 s
               ))}
             </div>
-
           </div>
         </div>
       </div>

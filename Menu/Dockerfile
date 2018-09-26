@@ -4,5 +4,5 @@ WORKDIR /sim
 COPY package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 3601
+EXPOSE 3600
 CMD ["npm", "start"]

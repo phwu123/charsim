@@ -4,15 +4,15 @@ import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import React from 'react';
 import { render } from 'react-dom';
-import App from './components/App.jsx';
+import StatusPoints from './components/StatusPoints.jsx';
 import { Provider } from 'react-redux';
 import store from './components/store';
 
 render(
   <Provider store={store}>
     <div>
-      <App />
+      <StatusPoints />
     </div> 
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('StatusPoints')
   );
