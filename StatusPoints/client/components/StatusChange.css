@@ -1,3 +1,10 @@
+:root {
+  --border-style: 2px solid #c0e8f7;
+  --triangle: polygon(10% 0, 100% 50%, 10% 100%);
+  --triangle-light: #c1e4fc;
+  --triangle-dark: #82a3b4;
+}
+
 :local(.formlenstats) {
   max-width: 20px;
   border: 0;
@@ -14,13 +21,13 @@
 }
 
 :local(.background) {
-  border: 2px solid #c0e8f7;
+  border: var(--border-style);
   border-bottom: none;
   background-color: #f4f4f4;
 }
 
 :local(.borderu) {
-  border-top:  2px solid #c0e8f7;
+  border-top: var(--border-style);
 }
 
 :local(.borderudl) {
@@ -37,7 +44,7 @@
 }
 
 :local(.borderlast) {
-  border-bottom: 2px solid #c0e8f7;
+  border-bottom: var(--border-style);
 }
 
 :local(.triangler:before) {
@@ -48,9 +55,9 @@
   z-index: 2;
   min-width: 9px;
   min-height: 9px;
-  background: #c1e4fc;
-  -webkit-clip-path: polygon(10% 0, 100% 50%, 10% 100%);
-  clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+  background: var(--triangle-light);
+  -webkit-clip-path: var(--triangle);
+  clip-path: var(--triangle);
 }
 
 :local(.triangler) {
@@ -59,9 +66,9 @@
   display: block;
   min-width: 11px;
   min-height: 11px;
-  background: #82a3b4;
-  -webkit-clip-path: polygon(10% 0, 100% 50%, 10% 100%);
-  clip-path: polygon(10% 0, 100% 50%, 10% 100%);  
+  background: var(--triangle-dark);
+  -webkit-clip-path: var(--triangle);
+  clip-path: var(--triangle);  
 }
 
 :local(.trianglerpress) {
@@ -70,9 +77,9 @@
   display: block;
   min-width: 11px;
   min-height: 11px;
-  background: #82a3b4;
-  -webkit-clip-path: polygon(10% 0, 100% 50%, 10% 100%);
-  clip-path: polygon(10% 0, 100% 50%, 10% 100%);  
+  background: var(--triangle-dark);
+  -webkit-clip-path: var(--triangle);
+  clip-path: var(--triangle);  
 }
 
 :local(.trianglerhide) {

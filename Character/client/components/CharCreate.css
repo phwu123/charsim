@@ -1,0 +1,259 @@
+:root {
+  --focus: 0 0 10px #9ecaed;
+  --button-selected: linear-gradient(#a0d8f8, #c0e8f7, #acd8e3, #a0d8f8, #c0e8f7, #c0e8f7);
+  --border-color: 1px solid #9acbec;
+  --triangler: polygon(0 0, 90% 50%, 0 100%);
+  --trianglel: polygon(10% 50%, 100% 0, 100% 100%);
+  --triangle-light: #c1e4fc;
+  --triangle-dark: #82a3b4;
+}
+
+:local(.grid) {
+  display: inline-grid;
+  box-shadow: 1px 2px 10px 0 rgba(0,0,0,0.5);
+  grid-template-areas:  'cl cl cl m f'
+                        'ch ch ch f1 hd'
+                        'ch ch ch f2 hd'
+                        'ch ch ch f3 cd'
+                        'na na na f4 cd';
+  align-items: center;
+  border-radius: 5px;
+  padding: 2px 2px 5px 2px;
+}
+
+:local(.selectClass) {
+  grid-area: cl;
+  justify-self: center;
+}
+
+:local(.selectJob) {
+  border-radius: 5px;
+  border: var(--border-color);
+  text-align-last: center;
+}
+
+:local(.msign) {
+  grid-area: m;
+  justify-self: center;
+}
+
+:local(.fsign) {
+  grid-area: f;
+  justify-self: center;
+}
+
+:local(.button) {
+  border: var(--border-color);
+  background: #fff;
+  box-shadow: 1px 2px 2px 0 rgba(0,0,0,0.2);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+:local(.button:hover) {
+  background: var(--button-selected);
+}
+
+:local(.turn) {
+  z-index: 2;
+}
+
+:local(.pic) {
+  grid-area: ch;
+  justify-self: center;
+  height: 120px;
+  width: 120px;
+}
+
+
+:local(.center) {
+  justify-self: center;
+}
+
+:local(.hairDye) {
+  grid-area: hd;
+  justify-self: left;
+  align-self: start;
+}
+
+:local(.hairBar) {
+  grid-area: hb;
+  justify-self: left;
+}
+
+:local(.costumeDye) {
+  grid-area: cd;
+  justify-self: left;
+  align-self: start;
+}
+
+:local(.costumeBar) {
+  grid-area: cb;
+  justify-self: center;
+}
+
+:local(.inputName) {
+  grid-area: na;
+  justify-self: center;
+}
+
+:local(.nameform) {
+  display: inline;
+}
+
+:local(.formlenname) {
+  max-width: 130px;
+  border: 0;
+  padding: 0 2px 0 0;
+  text-align: center;
+}
+
+:local(.formlenname:hover) {
+  box-shadow: var(--focus);
+}
+
+:local(.triangler:before) {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 2;
+  width: 9px;
+  height: 9px;
+  background: var(--triangle-light);
+  -webkit-clip-path: var(--triangler);
+  clip-path: var(--triangler);
+}
+
+:local(.triangler) {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  top: -100px;
+  left: 100px;
+  width: 11px;
+  height: 11px;
+  background: var(--triangle-dark);
+  -webkit-clip-path: var(--triangler);
+  clip-path: var(--triangler); 
+}
+
+:local(.trianglerpress) {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  top: -100px;
+  left: 100px;
+  width: 11px;
+  height: 11px;
+  background: var(--triangle-dark);
+  -webkit-clip-path: var(--triangler);
+  clip-path: var(--triangler);  
+}
+
+:local(.trianglel:before) {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 2;
+  width: 9px;
+  height: 9px;
+  background: var(--triangle-light);
+  -webkit-clip-path: var(--trianglel);
+  clip-path: var(--trianglel);
+}
+
+:local(.trianglel) {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  top: -111px;
+  left: 24px;
+  width: 11px;
+  height: 11px;
+  background: var(--triangle-dark);
+  -webkit-clip-path: var(--trianglel);
+  clip-path: var(--trianglel); 
+}
+
+:local(.trianglelpress) {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  top: -111px;
+  left: 24px;
+  width: 11px;
+  height: 11px;
+  background: var(--triangle-dark);
+  -webkit-clip-path: var(--trianglel);
+  clip-path: var(--trianglel);  
+}
+
+:local(.list) {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 2;
+}
+
+:local(.red) {
+  background: red;
+  color: red;
+  list-style-type: none;
+  border: var(--border-color);
+  user-select: none;
+  cursor: pointer;
+}
+
+:local(.yellow) {
+  background: yellow;
+  color: yellow;
+  list-style-type: none;
+  border: var(--border-color);
+  user-select: none;
+  cursor: pointer;
+}
+
+:local(.blue) {
+  background: blue;
+  color: blue;
+  list-style-type: none;
+  border: var(--border-color);
+  user-select: none;
+  cursor: pointer;
+}
+
+:local(.brown) {
+  background: brown;
+  color: brown;
+  list-style-type: none;
+  border: var(--border-color);
+  user-select: none;
+  cursor: pointer;
+}
+
+:local(.green) {
+  background: green;
+  color: green;
+  list-style-type: none;
+  border: var(--border-color);
+  user-select: none;
+  cursor: pointer;
+}
+
+:local(.base) {
+  background: #fff;
+  list-style-type: none;
+  border: var(--border-color);
+  user-select: none;
+  cursor: pointer;
+}
+
+:local(.hide) {
+  display: none;
+}
+
+:local(.pointer) {
+  cursor: pointer;
+}
