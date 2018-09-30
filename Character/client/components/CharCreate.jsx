@@ -7,20 +7,22 @@ export default class CharCreate extends Component {
   constructor() {
     super();
     this.state = {
-      job: ['Lord Knight', 'High Priest', 'High Wizard', 'Sniper'],
+      job: ['Lord Knight', 'High Priest', 'High Wizard'],
       // job: ['Lord Knight','High Priest', 'High Wizard', 'Whitesmith', 'Assassin Cross', 'Sniper', 'Paladin', 'Champion', 'Professor', 'Creator', 'Stalker'],
-      faces: [0, 1, 2, 3],
+      faces: [0, 1, 2],
       name: 'Name',
-      clothColor: [styles.base, styles.red, styles.blue, styles.green],
-      hairColor: [styles.red, styles.yellow, styles.blue, styles.brown],
+      hairColor: [styles.red, styles.yellow, styles.blue],
+      // hairColor: [styles.red, styles.yellow, styles.blue, styles.brown],
+      clothColor: [styles.base, styles.red, styles.blue],
+      // clothColor: [styles.base, styles.red, styles.blue, styles.green],
       clothList: true,
       hairBar: styles.red,
       clothBar: styles.base,
-      class: 'swordsman21',
+      class: 'swordman21',
       gender: 'f',
       face: 0,  
       hair: 0,
-      clothes: 0,
+      cloth: 0,
       pose: 0,
       turn: 0,
       image: '', // class, gender, face, hair, clothes, pose, turn
@@ -54,15 +56,15 @@ export default class CharCreate extends Component {
   turnCharacter(e) {
     const dir = e.target.dataset.dir;
     if (dir === 'r')
-      if (this.state.turn < 7)
-        this.setState({ turn: this.state.turn + 1 });
+      if (this.state.turn < 6)
+        this.setState({ turn: this.state.turn + 2 });
       else
         this.setState({ turn: 0 });
     else
       if (this.state.turn > 0)
-        this.setState({ turn: this.state.turn - 1 });
+        this.setState({ turn: this.state.turn - 2 });
       else
-        this.setState({ turn: 7 });
+        this.setState({ turn: 6 });
   }
 
   clickTurnOn(e) {
@@ -88,8 +90,6 @@ export default class CharCreate extends Component {
       this.setState({ class: 'acolyte21' });
     if (value === 2)
       this.setState({ class: 'mage21' });
-    if (value === 3)
-      this.setState({ class: 'archer21' })
     // if (value === 3)
     //   this.setState({ class: 'merchant21'});
     // if (value === 4)
@@ -121,7 +121,8 @@ export default class CharCreate extends Component {
     this.setState({ 
       [`show${type}`]: !this.state[`show${type}`],
     }, () => {
-      this.setState({ clothList: !this.state.showhair })
+      if (this.state.showhair)
+        this.setState({ showcloth: false })
     });
   }
 
@@ -131,12 +132,13 @@ export default class CharCreate extends Component {
       [`show${type}`]: false,
       [`${type}Bar`]: e.target.className
     }, () => {
-      this.setState({ clothList: !this.state.showhair })
+      if (!this.state.showhair)
+        this.setState({ showcloth: false })
     });
   }
 
   changePose() {
-    if (this.state.pose < 2)
+    if (this.state.pose < 1)
       this.setState({ pose: this.state.pose + 1 });
     else
       this.setState({ pose: 0 });
@@ -177,8 +179,7 @@ export default class CharCreate extends Component {
         </div>
         <div className={styles.pic}>
           <img 
-            src={`./images/${this.state.class}${this.state.gender}${this.state.face}${this.state.hair}${this.state.clothes}${this.state.pose}${this.state.turn}.png`}
-            onClick={() => this.changePose()}
+            src={`./images/${this.state.class}${this.state.gender}${this.state.face}${this.state.hair}${this.state.cloth}${this.state.pose}${this.state.turn}.png`}
             className={styles.pointer}
           />
         </div>
@@ -216,7 +217,7 @@ export default class CharCreate extends Component {
           Cloth: <br/>
           <ul className={styles.list}>
             <li 
-              className={this.state.clothList ? this.state.clothBar : styles.hide}
+              className={this.state.clothList && !this.state.showhair ? this.state.clothBar : styles.hide}
               onClick={(e) => this.toggleList(e)}
               data-type='cloth'
             >Base&ensp;</li>
@@ -266,6 +267,10 @@ export default class CharCreate extends Component {
           >
           </span>
         </div>
+        <div 
+          className={styles.changePose}
+          onClick={() => this.changePose()}
+        ></div>
 
       </div>
     )
@@ -281,8 +286,8 @@ export default class CharCreate extends Component {
 flk red 39 blue 50 green 95
 fhp red 42  blue 43  green 44
 fhw red
-
-
-
+mlk red 39 blue 50 green 95
+mp red 14 blue 15
+mw red 24 blue 30
 
 */

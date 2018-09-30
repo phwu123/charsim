@@ -196,7 +196,6 @@
   margin: 0;
   padding: 0;
   position: absolute;
-  z-index: 2;
 }
 
 :local(.red) {
@@ -257,6 +256,16 @@
 }
 
 :local(.pointer) {
-  cursor: pointer;
   transform: translate(-25%, -25%);
+}
+
+:local(.changePose) {
+  position: absolute;
+  background: transparent;
+  height: 120px;
+  width: 45px;
+  top: 54px;
+  left: 45px;
+  z-index: 2;
+  cursor: pointer;
 }
