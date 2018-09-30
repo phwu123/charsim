@@ -149,6 +149,16 @@ class ConnectedStatusPoints extends Component {
       this.props.guildName(this.state.guild);
     });
   }
+  
+  onDragEnd(e) {
+    this.setState({
+      coordinates: {
+        position: 'absolute',
+        top: e.clientY + 'px',
+        left: e.clientX - 0.16 * window.innerWidth + 'px'
+      }
+    })
+  }
 
   render() {
     const { guild, str, agi, vit, int, dex, luk } = this.props;
@@ -182,12 +192,17 @@ class ConnectedStatusPoints extends Component {
     const aspd = Math.floor(aspdBase - aspdEquip + aspdStatBonus + (aspdStatBonus * agi / 200));
 
     return (
-      <div>
+      <div style={this.state.coordinates}>
         <table className={styles.status}>
           <thead className={styles.header}>
             <tr>
               <th className={this.state.showStats ? styles.roundedl : styles.roundedlmin} colSpan="9">
-                <span className={styles.dotmove} draggable onDragStart={e => this.onDragStart(e)}></span>
+                <span
+                  className={styles.dotmove}
+                  draggable
+                  onDragStart={e => this.onDragStart(e)}
+                  onDragEnd={(e) => this.onDragEnd(e)}
+                ></span>
                 <span>Status</span>
               </th>
               <th className={this.state.showStats ? styles.roundedr : styles.roundedrmin}>

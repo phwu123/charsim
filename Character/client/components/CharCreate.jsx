@@ -7,7 +7,8 @@ export default class CharCreate extends Component {
   constructor() {
     super();
     this.state = {
-      job: ['Lord Knight','High Priest', 'High Wizard', 'Whitesmith', 'Assassin Cross', 'Sniper', 'Paladin', 'Champion', 'Professor', 'Creator', 'Stalker'],
+      job: ['Lord Knight', 'High Priest', 'High Wizard', 'Sniper'],
+      // job: ['Lord Knight','High Priest', 'High Wizard', 'Whitesmith', 'Assassin Cross', 'Sniper', 'Paladin', 'Champion', 'Professor', 'Creator', 'Stalker'],
       faces: [0, 1, 2, 3],
       name: 'Name',
       clothColor: [styles.base, styles.red, styles.blue, styles.green],
@@ -82,29 +83,31 @@ export default class CharCreate extends Component {
   selectClass(e) {
     const value = Number(e.target.value);
     if (value === 0)
-      this.setState({ class: 'swordsman21'});
+      this.setState({ class: 'swordman21' });
     if (value === 1)
-      this.setState({ class: 'acolyte21'});
+      this.setState({ class: 'acolyte21' });
     if (value === 2)
-      this.setState({ class: 'mage21'});
+      this.setState({ class: 'mage21' });
     if (value === 3)
-      this.setState({ class: 'merchant21'});
-    if (value === 4)
-      this.setState({ class: 'thief21'});
-    if (value === 5)
-      this.setState({ class: 'archer21'});
-    if (value === 6)
-      this.setState({ class: 'swordsman22'});
-    if (value === 7)
-      this.setState({ class: 'acolyte22'});
-    if (value === 8)
-      this.setState({ class: 'mage22'});
-    if (value === 9)
-      this.setState({ class: 'merchant22'});
-    if (value === 10)
-      this.setState({ class: 'archer22'});
-    if (value === 11)
-      this.setState({ class: 'thief22'});
+      this.setState({ class: 'archer21' })
+    // if (value === 3)
+    //   this.setState({ class: 'merchant21'});
+    // if (value === 4)
+    //   this.setState({ class: 'thief21'});
+    // if (value === 5)
+    //   this.setState({ class: 'archer21'});
+    // if (value === 6)
+    //   this.setState({ class: 'swordman22'});
+    // if (value === 7)
+    //   this.setState({ class: 'acolyte22'});
+    // if (value === 8)
+    //   this.setState({ class: 'mage22'});
+    // if (value === 9)
+    //   this.setState({ class: 'merchant22'});
+    // if (value === 10)
+    //   this.setState({ class: 'archer22'});
+    // if (value === 11)
+    //   this.setState({ class: 'thief22'});
   }
 
   colorChange(e) {
@@ -151,7 +154,7 @@ export default class CharCreate extends Component {
             {this.state.job.map((j, i) => (
               <option value={i} key={i}>{j}</option>
             ))}
-            <option value={this.state.gender === 'm' ? 11 : 12}>{this.state.gender === 'm' ? 'Minstrel' : 'Wanderer'}</option>
+            {/* <option value={this.state.gender === 'm' ? 11 : 12}>{this.state.gender === 'm' ? 'Minstrel' : 'Wanderer'}</option> */}
           </select>
         </div>
         <div className={styles.msign}>

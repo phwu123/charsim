@@ -19,6 +19,7 @@
   align-items: center;
   border-radius: 5px;
   padding: 2px 2px 5px 2px;
+  background: #fff;
 }
 
 :local(.selectClass) {
@@ -63,6 +64,7 @@
   justify-self: center;
   height: 120px;
   width: 120px;
+  overflow: hidden;
 }
 
 
@@ -256,4 +258,5 @@
 
 :local(.pointer) {
   cursor: pointer;
+  transform: translate(-25%, -25%);
 }

@@ -5,39 +5,27 @@ export default class Menu extends Component {
   constructor() {
     super();
     this.state = {
-      showNew: false,
-      showStatus: false,
+
     }
   }
 
-  statusToggle() {
-    this.setState({ showStatus: !this.state.showStatus });
+  statusToggle(e) {
+    const type = e.target.dataset.type;
+    this.setState({ [`show${type}`]: !this.state[`show${type}`] });
   }
 
   onDragOver(e) {
     e.preventDefault();
   }
 
-  onDrop(e) {
-    e.preventDefault();
-    this.setState({
-      coordinates: {
-        position: 'absolute',
-        top: e.clientY + 'px',
-        left: e.clientX - 0.16 * window.innerWidth + 'px'
-      },
-    })
-  }
-
   render() {
     const sims = [];
-    const components = ['StatusPoints'];
+    const components = ['Char', 'StatusPoints'];
     components.forEach((C, i) => {
       sims.push(
         <div
           key={i}
-          className={this.state.showStatus ? `visible` : `invisible`}
-          style={this.state.coordinates}
+          className={this.state[`show${components[i]}`] ? '' : styles.hide}
           id={C}
         >
         </div>
@@ -49,19 +37,30 @@ export default class Menu extends Component {
         <div className={`row`}>
           <div className={`col-sm-2`}>
             <div className={styles.menu}>
-              <span className={[`btn`, styles.statusb].join(' ')}>
+              <span className={[`btn`, styles.button].join(' ')}>
                 Menu
               </span>
             </div>
           </div>
+
           <div className={`col-sm-10`}>
             <div className={styles.header}>
               <button
-                onClick={e => this.statusToggle()}
+                onClick={e => this.statusToggle(e)}
                 type="button"
-                className={this.state.showStatus ?
-                  [`btn`, styles.statusbp].join(' ') :
-                  [`btn`, styles.statusb].join(' ')}>
+                data-type='Char'
+                className={this.state.showchar ?
+                  [`btn`, styles.buttonp].join(' ') :
+                  [`btn`, styles.button].join(' ')}>
+                Character
+              </button>
+              <button
+                onClick={e => this.statusToggle(e)}
+                type="button"
+                data-type='StatusPoints'
+                className={this.state.showstatus ?
+                  [`btn`, styles.buttonp].join(' ') :
+                  [`btn`, styles.button].join(' ')}>
                 Status
               </button>
             </div>
@@ -69,7 +68,7 @@ export default class Menu extends Component {
             <div
               className={styles.sim}
               onDragOver={(e) => this.onDragOver(e)}
-              onDrop={(e) => this.onDrop(e)}>
+            >
               {sims.map(s => (
                 s
               ))}

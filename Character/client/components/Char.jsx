@@ -18,6 +18,15 @@ export default class Char extends Component {
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   }
 
+  onDragEnd(e) {
+    this.setState({
+      coordinates: {
+        position: 'absolute',
+        top: e.clientY + 'px',
+        left: e.clientX - 0.16 * window.innerWidth + 'px'
+      }
+    })
+  }
 
   resetStyle() {
 
@@ -34,19 +43,26 @@ export default class Char extends Component {
   render() {
 
     return (
-      <div>
+      <div style={this.state.coordinates}>
         <table className={styles.character}>
           <thead className={styles.header}>
             <tr>
               <th className={this.state.showChar ? styles.roundedl : styles.roundedlmin}>
-                <span className={styles.dotmove} draggable onDragStart={e => this.onDragStart(e)}></span>
+                <span 
+                  className={styles.dotmove}
+                  draggable
+                  onDragStart={(e) => this.onDragStart(e)}
+                  onDragEnd={e => this.onDragEnd(e)}
+                ></span>
                 <span>Character&emsp;&emsp;&emsp;&emsp;&emsp;</span>
               </th>
               <th className={this.state.showChar ? styles.roundedr : styles.roundedrmin}>
                 <div className={styles.dot}>
-                  <div className={styles.dotletter} onClick={e => this.clickCloseChar()}>
+                  <div 
+                    className={styles.dotletter}
+                    onClick={e => this.clickCloseChar()}>
                     -
-                </div>
+                  </div>
                 </div>
                 <div className={styles.dot}>
                   <div className={styles.dotletter} onClick={e => this.resetStyle(e)} onMouseOver={e => this.tooltipOn(e)} onMouseOut={e => this.tooltipOff(e)}>
