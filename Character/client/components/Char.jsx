@@ -22,8 +22,8 @@ export default class Char extends Component {
     this.setState({
       coordinates: {
         position: 'absolute',
-        top: e.clientY + 'px',
-        left: e.clientX - 0.16 * window.innerWidth + 'px'
+        top: Math.min(Math.max(e.clientY - 0.01 * window.innerHeight, 0.111 * window.innerHeight), 0.98 * window.innerHeight - 254) + 'px',
+        left: Math.min(Math.max(e.clientX - 0.16 * window.innerWidth, 0), 0.83 * window.innerWidth - 225) + 'px'
       }
     })
   }
@@ -76,7 +76,9 @@ export default class Char extends Component {
             </tr>
           </thead>
         </table>
-        {this.state.showChar && <CharCreate />}
+        <div className={this.state.showChar ? '' : styles.hide}>
+          <CharCreate />
+        </div>
       </div>
     )
   }

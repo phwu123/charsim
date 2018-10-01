@@ -19,7 +19,7 @@ export default class CharCreate extends Component {
       hairBar: styles.red,
       clothBar: styles.base,
       class: 'swordman21',
-      gender: 'f',
+      gender: 'm',
       face: 0,  
       hair: 0,
       cloth: 0,
@@ -32,7 +32,7 @@ export default class CharCreate extends Component {
   }
 
   componentDidMount() {
-
+    
   }
 
   preventDefault(e) {
@@ -165,7 +165,7 @@ export default class CharCreate extends Component {
             onClick={e => this.selectGender(e)}
             value='m'
           >
-            <img src={this.state.gender === 'm' ?'./images/maleOn.png' : './images/male.png'} />
+            <img src={this.state.gender === 'm' ?'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/maleOn.png' : 'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/male.png'} />
           </button>
         </div>
         <div className={styles.fsign}>
@@ -174,19 +174,19 @@ export default class CharCreate extends Component {
             onClick={e => this.selectGender(e)}
             value='f'
           >
-            <img src={this.state.gender === 'f' ?'./images/femaleOn.png' : './images/female.png'} />
+            <img src={this.state.gender === 'f' ?'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/femaleOn.png' : 'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/female.png'} />
           </button>
         </div>
         <div className={styles.pic}>
           <img 
-            src={`./images/${this.state.class}${this.state.gender}${this.state.face}${this.state.hair}${this.state.cloth}${this.state.pose}${this.state.turn}.png`}
+            src={`https://s3-us-west-1.amazonaws.com/ph-charsim/char-char/${this.state.class}${this.state.gender}${this.state.face}${this.state.hair}${this.state.cloth}${this.state.pose}${this.state.turn}.png`}
             className={styles.pointer}
           />
         </div>
         {this.state.faces.map((f, i) => (
           <div className={styles.center} key={i}>
             <Face
-              img={`./images/${this.state.gender}${i}.gif`}
+              img={`https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/${this.state.gender}${i}.gif`}
               num={i}
               type='face'
               selectColor={this.selectColor}
@@ -284,8 +284,8 @@ export default class CharCreate extends Component {
 
 /*
 flk red 39 blue 50 green 95
-fhp red 42  blue 43  green 44
-fhw red
+fhp red 42  blue 50  green 44
+fhw red 24 blue 30
 mlk red 39 blue 50 green 95
 mp red 14 blue 15
 mw red 24 blue 30

@@ -6,16 +6,19 @@
 }
 
 :local(.menu) {
-  min-height: 100vh;
+  height: 101vh;
   border-right: 2px solid #9acbec;
   background: linear-gradient(135deg,var(--menu-background-color));
   text-align: center;
+  background-attachment: fixed;
 }
 
 :local(.header) {
-  height: 10vh;
+  height: 11vh;
+  width: 90vw;
   border-bottom: 2px solid #9acbec;
   background-image: radial-gradient(circle, var(--menu-background-color));
+  background-attachment: fixed;
 }
 
 :local(.button) {
@@ -42,6 +45,7 @@
   height: 90vh;
   width: 90vw;
   background: linear-gradient(45deg,var(--menu-background-color));
+  background-attachment: fixed;
 }
 
 [class*='col-'] {

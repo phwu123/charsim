@@ -154,8 +154,8 @@ class ConnectedStatusPoints extends Component {
     this.setState({
       coordinates: {
         position: 'absolute',
-        top: e.clientY + 'px',
-        left: e.clientX - 0.16 * window.innerWidth + 'px'
+        top: Math.min(Math.max(e.clientY - 0.01 * window.innerHeight, 0.1 * window.innerHeight), 0.99 * window.innerHeight - 174) + 'px',
+        left: Math.min(Math.max(e.clientX - 0.16 * window.innerWidth, 0), 0.88 * window.innerWidth - 369) + 'px'
       }
     })
   }
