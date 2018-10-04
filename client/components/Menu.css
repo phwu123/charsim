@@ -1,0 +1,64 @@
+:root {
+  --button-plain: linear-gradient(#f4feff, #e8f6f7, #e7eced, #ebf3f4, #e8f6f7);
+  --button-selected: linear-gradient(#a0d8f8, #c0e8f7, #acd8e3, #a0d8f8, #c0e8f7, #c0e8f7);
+  --button-border: 1px solid #959595;
+  --menu-background-color: #76a5f7, #7e9fd9, #c1e4fc, #76a5f7, #7e9fd9;
+}
+
+:local(.row) {
+  margin-right: 0;
+}
+
+:local(.menu) {
+  height: 100vh;
+  border-right: 2px solid #9acbec;
+  background: linear-gradient(135deg,var(--menu-background-color));
+  text-align: center;
+  background-attachment: fixed;
+}
+
+:local(.header) {
+  height: 10vh;
+  width: 100%;
+  border-bottom: 2px solid #9acbec;
+  background-image: radial-gradient(circle, var(--menu-background-color));
+  background-attachment: fixed;
+}
+
+:local(.margin) {
+  margin-left: 2vw;
+}
+
+:local(.button) {
+  border: var(--button-border);
+  background: var(--button-plain);
+  box-shadow: 1px 2px 10px 0 rgba(0,0,0,0.2);
+  transform: translateY(50%);
+}
+
+:local(.buttonp) {
+  border: var(--button-border);
+  background: var(--button-selected);
+  box-shadow: 1px 2px 10px 0 rgba(0,0,0,0.2);
+  transform: translateY(50%);
+}
+
+:local(.button:hover) {
+  background: var(--button-selected);
+}
+
+:local(.sim) {
+  height: 90vh;
+  width: 100%;
+  background: linear-gradient(45deg,var(--menu-background-color));
+  background-attachment: fixed;
+}
+
+[class*='col-'] {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+:local(.hide) {
+  display: none;
+}

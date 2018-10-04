@@ -1,0 +1,119 @@
+:root {
+  --background-color: linear-gradient(135deg,#c1e4fc, #89d4eb, #c1e4fc, #89d4eb, #c1e4fc);
+  --dot-color: linear-gradient(45deg,#89d4eb, #64caf5, #89d4eb, #64caf5, #89d4eb);
+  --underline-color: #c0e8f7;
+}
+
+:local(.status) {
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 1px 2px 10px 0 rgba(0,0,0,0.5);
+  line-height: 1;
+  width: 369px;
+  border-collapse: separate;
+  border-spacing: 0;
+  padding-bottom: 0;
+}
+
+:local(.header) {
+  background: var(--background-color);
+  background-color: #89d4eb;
+  border-spacing: 0;
+
+}
+
+:local(.roundedl) {
+  border-radius: 5px 0 0 0;
+}
+
+:local(.roundedlmin) {
+  border-radius: 5px 0 0 5px;
+}
+
+:local(.roundedr) {
+  border-radius: 0 5px 0 0;
+  text-align: right;
+}
+
+:local(.roundedrmin) {
+  border-radius: 0 5px 5px 0;
+  text-align: right;
+}
+
+:local(.formlenguild) {
+  max-width: 130px;
+  border: 0;
+  padding: 0 2px 0 0;
+  text-align: right;
+}
+
+:local(.guildform) {
+  display: inline;
+}
+
+:local(.formlenguild:hover) {
+  box-shadow:0 0 10px #9ecaed;
+}
+
+:local(.dotmove) {
+  cursor: grab;
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+  background: var(--dot-color);
+  margin: 3px 2px;
+}
+
+:local(.dot) {
+  cursor: pointer;
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+  background: var(--dot-color);
+  margin: 3px 2px;
+}
+
+:local(.dot:hover) {
+  filter: brightness(50%);
+}
+
+:local(.tooltip) {
+  display: block;
+  position: absolute;
+  width: 100px;
+  font-size: x-small;
+  text-align: center;
+  border-radius: 5px;
+  background: var(--background-color);
+  transform: translateY(-25px);
+}
+
+:local(.dotletter) {
+  position: absolute;
+  font-size: 70%;
+  font-weight: 600;
+  margin: -2px 1px;
+}
+
+:local(.textRight) {
+  text-align: right
+}
+
+:local(.borderu) {
+  border-top:  2px solid var(--underline-color);
+}
+
+:local(.underline) {
+  border-bottom: 1px solid var(--underline-color);
+}
+
+:local(.hide) {
+  display: none;
+}
+
+:local(.unhide) {
+  display: table-row;
+}
+
