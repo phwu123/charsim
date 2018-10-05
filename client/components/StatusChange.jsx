@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import styles from './StatusChange.css';
 
 const mapStateToProps = (state) => {
-  return { stats: state.status.basic };
+  return { 
+    stats: state.statBasic,
+    job: state.statJob,
+  };
 }
 
 const ConnectedStatusChange = (props) => {
-  const { stat, stats, preventDefault, statInput, clearInput, incStat, incStatPush, incStatRelease } = props;
+  const { stat, stats, job, preventDefault, statInput, clearInput, incStat, incStatPush, incStatRelease } = props;
   const increment = Math.floor((stats[`${stat}Base`] - 1) / 10) + 2
   return (
     <React.Fragment>
@@ -25,8 +28,8 @@ const ConnectedStatusChange = (props) => {
           />
         </form>
       </td>
-      <td className={stat !== 'luk' ? [styles.background, styles.borderud].join(' ') : [styles.background, styles.borderud, styles.borderlast].join(' ')}>{stats[`${stat}Job`] !== 0 && '+'}</td>
-      <td className={stat !== 'luk' ? [styles.textRight, styles.background, styles.borderud].join(' ') : [styles.textRight, styles.background, styles.borderud, styles.borderlast].join(' ')}>{stats[`${stat}Job`] !== 0 && stats[`${stat}Job`]}</td>
+      <td className={stat !== 'luk' ? [styles.background, styles.borderud].join(' ') : [styles.background, styles.borderud, styles.borderlast].join(' ')}>{job[`${stat}Job`] !== 0 && '+'}</td>
+      <td className={stat !== 'luk' ? [styles.textRight, styles.background, styles.borderud].join(' ') : [styles.textRight, styles.background, styles.borderud, styles.borderlast].join(' ')}>{job[`${stat}Job`] !== 0 && job[`${stat}Job`]}</td>
       <td className={ stat !== 'luk'? styles.background : [styles.background, styles.borderlast].join(' ')}>
         {stats.pointsLeft >= increment && stats[`${stat}Base`] < 99 ?
           <span

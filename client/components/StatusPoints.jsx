@@ -3,19 +3,20 @@ import styles from './StatusPoints.css';
 import { connect } from 'react-redux';
 import * as action from './actions';
 import StatusChange from './StatusChange.jsx';
+import store from './store'
 
 const mapStateToProps = (state) => {
-  return { 
-    all: state.status.basic,
-    adv: state.status.adv,
-    str: state.status.basic.strBase,
-    agi: state.status.basic.agiBase,
-    vit: state.status.basic.vitBase,
-    int: state.status.basic.intBase,
-    dex: state.status.basic.dexBase,
-    luk: state.status.basic.lukBase,
-    guild: state.status.basic.guild,
-    points: state.status.basic.pointsLeft,
+  return {
+    basic: state.statBasic,
+    adv: state.statAdv,
+    str: state.statBasic.strBase,
+    agi: state.statBasic.agiBase,
+    vit: state.statBasic.vitBase,
+    int: state.statBasic.intBase,
+    dex: state.statBasic.dexBase,
+    luk: state.statBasic.lukBase,
+    points: state.basic.pointsLeft,
+    guild: state.basic.guild,
   };
 }
 
@@ -28,7 +29,7 @@ const mapDispatchToProps = (dispatch) => {
     incdex: (num) => dispatch(action.incdex(num)),
     incluk: (num) => dispatch(action.incluk(num)),
     guildName: (name) => dispatch(action.guildName(name)),
-    setPoints: (increment) => dispatch(action.setPoints(increment)),
+    setPoints: (num) => dispatch(action.setPoints(num)),
     resetStats: () => dispatch(action.resetStats()),
     updateBonus: () => dispatch(action.updateBonus(job)),
   };
@@ -47,6 +48,7 @@ class ConnectedStatusPoints extends Component {
   }
 
   componentDidMount() {
+    console.log(store.getState())
   }
 
   clickCloseStats() {
@@ -64,16 +66,14 @@ class ConnectedStatusPoints extends Component {
 
   validateStats() {
     let pointsLeft = 1325
-    for (let stats in this.props.all) {
-      if (stats[3] === 'B') {
-        const stat = this.props.all[stats];
-        let count = 1;
-        let increment = 2;
-        while (count < stat && pointsLeft >= increment) {
-          increment = Math.floor((count - 1) / 10) + 2;
-          pointsLeft -= increment
-          count += 1;
-        }
+    for (let stats in this.props.basic) {
+      const stat = this.props.basic[stats];
+      let count = 1;
+      let increment = 2;
+      while (count < stat && pointsLeft >= increment) {
+        increment = Math.floor((count - 1) / 10) + 2;
+        pointsLeft -= increment
+        count += 1;
       }
     }
     this.props.setPoints(pointsLeft);
@@ -81,7 +81,7 @@ class ConnectedStatusPoints extends Component {
 
   maxAllowed(type) {
     let points = this.props.points;
-    let stat = this.props.all[`${type}Base`]
+    let stat = this.props.basic[`${type}Base`]
     let increment = Math.floor((stat - 1) / 10) + 2;
     while (points >= increment && stat < 99) {
       increment = Math.floor((stat - 1) / 10) + 2;
@@ -96,7 +96,7 @@ class ConnectedStatusPoints extends Component {
     const value = e.target.validity.valid && e.target.value > 0 ? Number(e.target.value) : 1;
     const maxStat = this.maxAllowed(stat);
     this.setState(
-      { [`${stat}Input`]: value}, () => {
+      { [`${stat}Input`]: value }, () => {
         const input = this.state[`${stat}Input`];
         if (input > maxStat) {
           this.props[`inc${stat}`](maxStat);
@@ -158,7 +158,7 @@ class ConnectedStatusPoints extends Component {
       this.props.guildName(this.state.guild);
     });
   }
-  
+
   onDragEnd(e) {
     this.setState({
       coordinates: {
@@ -234,14 +234,14 @@ class ConnectedStatusPoints extends Component {
           <tbody>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td className={styles.borderu}>&nbsp;Str&nbsp;</td>
-              <StatusChange 
+              <StatusChange
                 statInput={this.statInput}
                 clearInput={this.clearInput}
                 incStat={this.incStat}
                 incStatPush={this.incStatPush}
                 incStatRelease={this.incStatRelease}
-                preventDefault={this.preventDefault} 
-                strPress={this.state.strPress} 
+                preventDefault={this.preventDefault}
+                strPress={this.state.strPress}
                 stat="str"
               />
               <td className={styles.borderu}>
@@ -262,14 +262,14 @@ class ConnectedStatusPoints extends Component {
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Agi&nbsp;</td>
-              <StatusChange 
+              <StatusChange
                 statInput={this.statInput}
                 clearInput={this.clearInput}
                 incStat={this.incStat}
                 incStatPush={this.incStatPush}
                 incStatRelease={this.incStatRelease}
-                preventDefault={this.preventDefault} 
-                agiPress={this.state.agiPress} 
+                preventDefault={this.preventDefault}
+                agiPress={this.state.agiPress}
                 stat="agi"
               />
               <td>
@@ -290,14 +290,14 @@ class ConnectedStatusPoints extends Component {
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Vit&nbsp;</td>
-              <StatusChange 
+              <StatusChange
                 statInput={this.statInput}
                 clearInput={this.clearInput}
                 incStat={this.incStat}
                 incStatPush={this.incStatPush}
                 incStatRelease={this.incStatRelease}
-                preventDefault={this.preventDefault} 
-                vitPress={this.state.vitPress} 
+                preventDefault={this.preventDefault}
+                vitPress={this.state.vitPress}
                 stat="vit"
               />
               <td>
@@ -318,14 +318,14 @@ class ConnectedStatusPoints extends Component {
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Int&nbsp;</td>
-              <StatusChange 
+              <StatusChange
                 statInput={this.statInput}
                 clearInput={this.clearInput}
                 incStat={this.incStat}
                 incStatPush={this.incStatPush}
                 incStatRelease={this.incStatRelease}
-                preventDefault={this.preventDefault} 
-                intPress={this.state.intPress} 
+                preventDefault={this.preventDefault}
+                intPress={this.state.intPress}
                 stat="int"
               />
               <td>
@@ -346,14 +346,14 @@ class ConnectedStatusPoints extends Component {
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Dex&nbsp;</td>
-              <StatusChange 
+              <StatusChange
                 statInput={this.statInput}
                 clearInput={this.clearInput}
                 incStat={this.incStat}
                 incStatPush={this.incStatPush}
                 incStatRelease={this.incStatRelease}
-                preventDefault={this.preventDefault} 
-                dexPress={this.state.dexPress} 
+                preventDefault={this.preventDefault}
+                dexPress={this.state.dexPress}
                 stat="dex"
               />
               <td colSpan="2">
@@ -367,14 +367,14 @@ class ConnectedStatusPoints extends Component {
             </tr>
             <tr className={this.state.showStats ? styles.unhide : styles.hide}>
               <td>&nbsp;Luk&nbsp;</td>
-              <StatusChange 
+              <StatusChange
                 statInput={this.statInput}
                 clearInput={this.clearInput}
                 incStat={this.incStat}
                 incStatPush={this.incStatPush}
                 incStatRelease={this.incStatRelease}
-                preventDefault={this.preventDefault} 
-                lukPress={this.state.lukPress} 
+                preventDefault={this.preventDefault}
+                lukPress={this.state.lukPress}
                 stat="luk"
               />
               <td>
