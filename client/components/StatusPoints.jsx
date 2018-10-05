@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import styles from './StatusPoints.css';
 import { connect } from 'react-redux';
-import * as action from './actions';
+import * as statBasic from './actions/statBasic-actions.js';
+import * as basic from './actions/basic-actions.js';
 import StatusChange from './StatusChange.jsx';
-import store from './store'
 
 const mapStateToProps = (state) => {
   return {
@@ -22,16 +22,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    incstr: (num) => dispatch(action.incstr(num)),
-    incagi: (num) => dispatch(action.incagi(num)),
-    incvit: (num) => dispatch(action.incvit(num)),
-    incint: (num) => dispatch(action.incint(num)),
-    incdex: (num) => dispatch(action.incdex(num)),
-    incluk: (num) => dispatch(action.incluk(num)),
-    guildName: (name) => dispatch(action.guildName(name)),
-    setPoints: (num) => dispatch(action.setPoints(num)),
-    resetStats: () => dispatch(action.resetStats()),
-    updateBonus: () => dispatch(action.updateBonus(job)),
+    incstr: (num) => dispatch(statBasic.incstr(num)),
+    incagi: (num) => dispatch(statBasic.incagi(num)),
+    incvit: (num) => dispatch(statBasic.incvit(num)),
+    incint: (num) => dispatch(statBasic.incint(num)),
+    incdex: (num) => dispatch(statBasic.incdex(num)),
+    incluk: (num) => dispatch(statBasic.incluk(num)),
+    resetStats: () => dispatch(statBasic.resetStats()),
+    resetPoints: () => dispatch(basic.resetPoints()),
+    guildName: (name) => dispatch(basic.guildName(name)),
+    setPoints: (num) => dispatch(basic.setPoints(num)),
   };
 }
 
@@ -48,7 +48,7 @@ class ConnectedStatusPoints extends Component {
   }
 
   componentDidMount() {
-    console.log(store.getState())
+    
   }
 
   clickCloseStats() {
@@ -143,6 +143,7 @@ class ConnectedStatusPoints extends Component {
 
   resetStats() {
     this.props.resetStats();
+    this.props.resetPoints();
   }
 
   tooltipOn(e) {

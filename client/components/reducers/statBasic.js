@@ -7,7 +7,7 @@ import { INCREASE_DEX } from '../constants';
 import { INCREASE_LUK } from '../constants';
 import { RESET_STATS } from '../constants';
 
-const incStats = (state=initialState, action) => {
+const statBasic = (state=initialState, action) => {
   switch(action.type) {
     case INCREASE_STR:
       return {
@@ -41,7 +41,6 @@ const incStats = (state=initialState, action) => {
       }
     case RESET_STATS:
       return {
-        pointsLeft: 1325,
         strBase: 1,
         agiBase: 1,
         vitBase: 1,
@@ -54,4 +53,4 @@ const incStats = (state=initialState, action) => {
   }
 }
 
-export default incStats;
+export default statBasic;

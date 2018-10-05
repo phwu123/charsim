@@ -1,9 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as basic from './actions/basic-actions.js';
 import styles from './CharCreate.css';
 import Face from './Face.jsx';
-import Color from './Color.jsx'
+import Color from './Color.jsx';
 
-export default class CharCreate extends Component {
+const mapStateToProps = (state) => {
+  return {
+
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setName: (name) => dispatch(basic.setName(name)),
+    setGender: (gender) => dispatch(basic.setGender(gender)),
+  }
+}
+
+class ConnectedCharCreate extends Component {
   constructor() {
     super();
     this.state = {
@@ -40,7 +55,9 @@ export default class CharCreate extends Component {
   }
 
   nameInput(e) {
-    this.setState({ name: e.target.value });
+    this.setState({ name: e.target.value }, () => {
+      this.props.setName(this.state.name);
+    });
   }
 
   clearInput(e) {
@@ -49,7 +66,9 @@ export default class CharCreate extends Component {
 
   selectGender(e) {
     if (e.currentTarget.value !== this.state.gender) {
-      this.setState({ gender: e.currentTarget.value });
+      this.setState({ gender: e.currentTarget.value }, () => {
+        this.props.setGender(this.state.gender);
+      });
     }
   }
 
@@ -267,15 +286,16 @@ export default class CharCreate extends Component {
           >
           </span>
         </div>
-        <div 
-          className={styles.changePose}
-          onClick={() => this.changePose()}
-        ></div>
+        <div className={styles.changePose} onClick={() => this.changePose()}></div>
 
       </div>
     )
   }
 }
+
+const CharCreate = connect(mapStateToProps, mapDispatchToProps)(ConnectedCharCreate);
+
+export default CharCreate;
 
 
 // ['Lord Knight','High Priest', 'High Wizard', 'Whitesmith', 'Assassin Cross', 'Sniper', 'Paladin', 'Champion', 'Professor', 'Creator', 'Stalker']

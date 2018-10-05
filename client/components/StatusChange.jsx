@@ -6,11 +6,12 @@ const mapStateToProps = (state) => {
   return { 
     stats: state.statBasic,
     job: state.statJob,
+    pointsLeft: state.basic.pointsLeft,
   };
 }
 
 const ConnectedStatusChange = (props) => {
-  const { stat, stats, job, preventDefault, statInput, clearInput, incStat, incStatPush, incStatRelease } = props;
+  const { stat, stats, job, pointsLeft, preventDefault, statInput, clearInput, incStat, incStatPush, incStatRelease } = props;
   const increment = Math.floor((stats[`${stat}Base`] - 1) / 10) + 2
   return (
     <React.Fragment>
@@ -31,7 +32,7 @@ const ConnectedStatusChange = (props) => {
       <td className={stat !== 'luk' ? [styles.background, styles.borderud].join(' ') : [styles.background, styles.borderud, styles.borderlast].join(' ')}>{job[`${stat}Job`] !== 0 && '+'}</td>
       <td className={stat !== 'luk' ? [styles.textRight, styles.background, styles.borderud].join(' ') : [styles.textRight, styles.background, styles.borderud, styles.borderlast].join(' ')}>{job[`${stat}Job`] !== 0 && job[`${stat}Job`]}</td>
       <td className={ stat !== 'luk'? styles.background : [styles.background, styles.borderlast].join(' ')}>
-        {stats.pointsLeft >= increment && stats[`${stat}Base`] < 99 ?
+        {pointsLeft >= increment && stats[`${stat}Base`] < 99 ?
           <span
             onClick={e => incStat(e)}
             data-stat={stat}

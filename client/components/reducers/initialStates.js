@@ -4,6 +4,7 @@ const initialState = {
     class: 'swordman21',
     guild: '',
     name: '',
+    gender: 'm',
     pointsLeft: 1325,
   },
   statBasic: {
