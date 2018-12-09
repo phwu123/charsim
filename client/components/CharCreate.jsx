@@ -46,10 +46,6 @@ class ConnectedCharCreate extends Component {
     this.selectColor = this.selectColor.bind(this);
   }
 
-  componentDidMount() {
-    
-  }
-
   preventDefault(e) {
     e.preventDefault();
   }
@@ -184,7 +180,7 @@ class ConnectedCharCreate extends Component {
             onClick={e => this.selectGender(e)}
             value='m'
           >
-            <img src={this.state.gender === 'm' ?'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/maleOn.png' : 'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/male.png'} />
+            <img src={this.state.gender === 'm' ?'/images/misc/maleOn.png' : '/images/misc/male.png'} />
           </button>
         </div>
         <div className={styles.fsign}>
@@ -193,19 +189,19 @@ class ConnectedCharCreate extends Component {
             onClick={e => this.selectGender(e)}
             value='f'
           >
-            <img src={this.state.gender === 'f' ?'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/femaleOn.png' : 'https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/female.png'} />
+            <img src={this.state.gender === 'f' ?'/images/misc/femaleOn.png' : '/images/misc/female.png'} />
           </button>
         </div>
         <div className={styles.pic}>
           <img 
-            src={`https://s3-us-west-1.amazonaws.com/ph-charsim/char-char/${this.state.class}${this.state.gender}${this.state.face}${this.state.hair}${this.state.cloth}${this.state.pose}${this.state.turn}.png`}
+            src={`/images/char/${this.state.class}${this.state.gender}${this.state.face}${this.state.hair}${this.state.cloth}${this.state.pose}${this.state.turn}.png`}
             className={styles.pointer}
           />
         </div>
         {this.state.faces.map((f, i) => (
           <div className={styles.center} key={i}>
             <Face
-              img={`https://s3-us-west-1.amazonaws.com/ph-charsim/char-misc/${this.state.gender}${i}.gif`}
+              img={`/images/misc/${this.state.gender}${i}.gif`}
               num={i}
               type='face'
               selectColor={this.selectColor}
